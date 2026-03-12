@@ -8,6 +8,13 @@
 <meta name="apple-mobile-web-app-title" content="VMS">
 <meta name="theme-color" content="#0d1117">
 <title>Vehicle Maintenance System — Municipality of Balayan</title>
+<script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    });
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -193,6 +200,15 @@ tbody td{padding:12px 14px;vertical-align:middle;}
 .toast.success{border-color:rgba(63,185,80,.4);color:var(--green);}
 .toast.error{border-color:rgba(248,81,73,.4);color:var(--red);}
 
+/* ── OFFLINE BANNER ── */
+#offline-banner{
+  display:none;background:#d29922;color:#000;text-align:center;
+  padding:7px 16px;font-size:12.5px;font-weight:600;
+  flex-shrink:0;border-bottom:2px solid #b8810f;
+  font-family:var(--font-ui);
+}
+#offline-banner.show{display:block;}
+
 /* ── MOBILE CARDS ── */
 .mobile-cards{display:none;}
 .m-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;animation:fadeUp .2s ease both;}
@@ -200,41 +216,98 @@ tbody td{padding:12px 14px;vertical-align:middle;}
 .m-card-title{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
 .m-card-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text2);gap:8px;flex-wrap:wrap;}
 .m-card-amount{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--accent);}
-.fab{display:none;position:fixed;right:18px;bottom:calc(64px + 14px + var(--safe-bot));width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;color:#000;font-size:24px;box-shadow:0 4px 18px rgba(240,165,0,.4);align-items:center;justify-content:center;z-index:50;transition:transform .15s;}
+.fab{display:none;position:fixed;right:18px;bottom:calc(60px + 14px + var(--safe-bot));width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;color:#000;font-size:26px;box-shadow:0 4px 18px rgba(240,165,0,.4);align-items:center;justify-content:center;z-index:50;transition:transform .15s;}
 .fab:active{transform:scale(.9);}
 
+/* ── RESPONSIVE: Tablet ── */
+@media(max-width:1024px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .dash-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr 1fr;}
+}
 
-
-/* ── OFFLINE BANNER ── */
-#offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#d29922;color:#000;text-align:center;padding:8px 16px;font-size:13px;font-weight:600;}
-body.offline #shell{margin-top:38px;}
-
-/* ── RESPONSIVE ── */
-@media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.form-grid{grid-template-columns:1fr 1fr;}}
+/* ── RESPONSIVE: Mobile (≤768px) ── */
 @media(max-width:768px){
-  :root{--topbar-h:52px;}
+  :root{--topbar-h:50px;}
   #sidebar{position:fixed;top:0;left:0;height:100%;transform:translateX(-100%);}
   #sidebar.open{transform:translateX(0);box-shadow:var(--shadow);}
   #sidebar-overlay.open{display:block;}
   #topbar-menu-btn{display:flex;}
-  #bottom-nav{display:block;}
   #topbar-add-btn{display:none !important;}
-  .page{padding:14px 14px calc(8px + var(--safe-bot));}
+  #bottom-nav{display:block;}
+  .page{padding:12px 12px calc(10px + var(--safe-bot));}
   .stats-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .stat-card{padding:14px;}
-  .stat-num{font-size:26px;}
+  .stat-card{padding:12px 10px;}
+  .stat-icon{font-size:20px;margin-bottom:6px;}
+  .stat-num{font-size:24px;}
+  .stat-label{font-size:10px;}
   .dash-grid{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
   .form-actions{flex-direction:column-reverse;}
   .form-actions .btn{width:100%;justify-content:center;}
   .topbar-time{display:none;}
+  .topbar-refresh{display:none;}
+  .topbar-title{font-size:17px;}
   .modal-overlay{align-items:flex-end;padding:0;}
-  .modal{max-width:100%;border-radius:16px 16px 0 0;max-height:93vh;}
+  .modal{max-width:100%;border-radius:16px 16px 0 0;max-height:90dvh;}
   .table-wrap{display:none;}
   .mobile-cards{display:block;}
   .hide-mobile{display:none!important;}
-  .page-title{font-size:22px;}
+  .page-title{font-size:20px;}
+  .page-header{margin-bottom:14px;}
   .fab{display:flex;}
+  .card-body{padding:12px;}
+  .card-header{padding:12px 14px;}
+  .search-input{font-size:13px;}
+  .pills{gap:5px;margin-bottom:10px;}
+  .pill{padding:3px 10px;font-size:11px;}
+  .bnav-btn{font-size:9px;padding:8px 0 6px;}
+  .bnav-icon{font-size:18px;}
+  .m-card{padding:12px 14px;}
+  .m-card-title{font-size:14px;}
+}
+
+/* ── RESPONSIVE: Small phones (≤390px — iPhone SE, 12 mini) ── */
+@media(max-width:390px){
+  :root{--topbar-h:46px;}
+  .page{padding:10px 10px calc(8px + var(--safe-bot));}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .stat-card{padding:10px 8px;}
+  .stat-num{font-size:22px;}
+  .stat-label{font-size:9.5px;letter-spacing:.2px;}
+  .topbar-title{font-size:15px;}
+  .page-title{font-size:18px;}
+  .m-card{padding:10px 12px;margin-bottom:8px;}
+  .m-card-title{font-size:13px;}
+  .m-card-row{font-size:11px;}
+  .badge{font-size:10px;padding:2px 6px;}
+  .modal-title{font-size:17px;}
+  .modal-body{padding:14px 16px;}
+  .form-input,.form-select,.form-textarea{font-size:13px;padding:8px 10px;}
+  .btn{font-size:13px;padding:8px 14px;}
+  .pill{font-size:10.5px;padding:3px 9px;}
+  .fab{width:46px;height:46px;font-size:22px;right:14px;}
+  .bnav-btn{font-size:8.5px;}
+  .bnav-icon{font-size:16px;}
+}
+
+/* ── RESPONSIVE: Very small phones (≤320px — iPhone SE 1st gen) ── */
+@media(max-width:320px){
+  .stats-grid{grid-template-columns:1fr 1fr;gap:6px;}
+  .stat-card{padding:8px 6px;}
+  .stat-num{font-size:20px;}
+  .page-title{font-size:16px;}
+  .topbar-title{font-size:14px;}
+  .m-card-title{font-size:12.5px;}
+  .badge{font-size:9.5px;padding:1px 5px;}
+}
+
+/* ── RESPONSIVE: Large phones (≥430px — iPhone 14 Pro Max) ── */
+@media(min-width:430px) and (max-width:768px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .stat-card{padding:16px 14px;}
+  .stat-num{font-size:28px;}
+  .m-card{padding:14px 16px;}
 }
 </style>
 </head>
@@ -262,6 +335,7 @@ body.offline #shell{margin-top:38px;}
   <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
   <div id="main">
+    <div id="offline-banner">📵 Offline — view only. Changes cannot be saved until you reconnect.</div>
     <div id="topbar">
       <button id="topbar-menu-btn" onclick="toggleSidebar()">☰</button>
       <div><div class="topbar-title" id="topbar-title">Dashboard</div></div>
@@ -316,9 +390,6 @@ body.offline #shell{margin-top:38px;}
 <div class="modal-overlay" id="modal-history" onclick="closeOverlay(event,'modal-history')"><div class="modal"><div class="modal-header"><div class="modal-title">Maintenance Record</div><button class="modal-close" onclick="closeModal('modal-history')">✕</button></div><div class="modal-body" id="hmod-body"></div></div></div>
 <div class="modal-overlay" id="modal-form"    onclick="closeOverlay(event,'modal-form')"><div class="modal"><div class="modal-header"><div class="modal-title" id="form-title">Add Record</div><button class="modal-close" onclick="closeModal('modal-form')">✕</button></div><div class="modal-body" id="form-body"></div></div></div>
 <div class="toast" id="toast"></div>
-<!-- OFFLINE BANNER -->
-<div id="offline-banner">📵 You are offline — view only. Changes cannot be saved until you reconnect.</div>
-
 <!-- FAB (mobile only) -->
 <button class="fab" id="fab-btn" onclick="openAddModal()">＋</button>
 
@@ -334,9 +405,9 @@ import { getFirestore, initializeFirestore, persistentLocalCache, persistentMult
 // ══════════════════════════════════════════════════
 const firebaseConfig = {
   apiKey:      "AIzaSyCmoO3iEpR1R4GzHK2Z21YfCVV9_VRoMJo",
-  authDomain:  "vehicle-maintenance-syst-4fb2e.firebaseapp.com",
-  projectId:   "vehicle-maintenance-syst-4fb2e",
-  appId:       "1:513108103014:web:7ade19f5a6e6bb3e7f42a7",
+   authDomain:  "vehicle-maintenance-syst-4fb2e.firebaseapp.com",
+   projectId:   "vehicle-maintenance-syst-4fb2e",
+   appId:       "1:513108103014:web:7ade19f5a6e6bb3e7f42a7",
 };
 // ══════════════════════════════════════════════════
 
@@ -356,19 +427,17 @@ const firebaseConfig = {
       const fab    = document.getElementById('fab-btn');
       const addBtn = document.getElementById('topbar-add-btn');
       if (online) {
-        banner.style.display = 'none';
-        document.body.style.marginTop = '';
+        banner.classList.remove('show');
         if (fab)    fab.style.display = '';
         if (addBtn) addBtn.style.display = '';
       } else {
-        banner.style.display = 'block';
-        document.body.style.marginTop = '38px';
+        banner.classList.add('show');
         if (fab)    fab.style.display = 'none';
         if (addBtn) addBtn.style.display = 'none';
       }
     }
-    window.addEventListener('online',  () => setOnlineState(true));
-    window.addEventListener('offline', () => setOnlineState(false));
+    window.addEventListener('online',  () => { setOnlineState(true);  toast('Back online!','success'); });
+    window.addEventListener('offline', () => { setOnlineState(false); });
     setOnlineState(navigator.onLine);
 
     // ══ STATE ══
