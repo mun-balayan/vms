@@ -541,45 +541,57 @@ const firebaseConfig = {
 
     // ══ DASHBOARD ══
     // ── Insurance status helpers ──
+    // Normalise a raw date string: converts "JULY 1, 2026" → "July 1, 2026" so
+    // all browsers can parse it reliably.
+    function normDateStr(s) {
+      return s.replace(/\b([A-Z]{2,})\b/g, w => w.charAt(0) + w.slice(1).toLowerCase());
+    }
+    function safeParse(s) {
+      const d = new Date(normDateStr(s.trim()));
+      return isNaN(d) ? null : d;
+    }
     function parseInsDate(dateStr) {
-      // Handles: "July 11, 2025 to July 11, 2026", "2026-01-31", "January 1-31, 2026", "Jan 15, 2026", "01/31/2026" etc.
-      // For ranges, always returns the END date (expiry).
+      // Always returns the END date for ranges (= the expiry date).
+      // Handles formats stored in Firestore:
+      //   "JULY 1, 2025 - JULY 1, 2026"       ← most common: MONTH D, YYYY - MONTH D, YYYY
+      //   "July 11, 2025 to July 11, 2026"     ← "to" separator
+      //   "July 11, 2025 – July 11, 2026"      ← em-dash
+      //   "January 1-31, 2026"                 ← same-month range
+      //   "2026-01-31" / "Jan 15, 2026"        ← single dates
       if (!dateStr || dateStr === 'null') return null;
       const s = String(dateStr).trim();
-      // Range with "to" separator: "July 11, 2025 to July 11, 2026" → use end date
+
+      // ① "X to Y" → take Y
       const toMatch = s.match(/^.+?\s+to\s+(.+)$/i);
-      if (toMatch) {
-        const d = new Date(toMatch[1].trim());
-        if (!isNaN(d)) return d;
-      }
-      // Range with "–" or "-" between two full dates: "July 11, 2025 – July 11, 2026"
+      if (toMatch) { const d = safeParse(toMatch[1]); if (d) return d; }
+
+      // ② "MONTH D, YYYY - MONTH D, YYYY" or em-dash variant → take the part after the separator
+      // The separator is " - " or " – " surrounded by spaces (not a date-internal hyphen)
       const dashRangeMatch = s.match(/^.+?\s+[-–]\s+([A-Za-z].+)$/);
-      if (dashRangeMatch) {
-        const d = new Date(dashRangeMatch[1].trim());
-        if (!isNaN(d)) return d;
-      }
-      // Try direct parse first
-      let d = new Date(s);
-      if (!isNaN(d)) return d;
-      // Range like "January 1-31, 2026" → extract last date number + month + year
+      if (dashRangeMatch) { const d = safeParse(dashRangeMatch[1]); if (d) return d; }
+
+      // ③ Single date direct parse
+      const direct = safeParse(s);
+      if (direct) return direct;
+
+      // ④ Same-month range "January 1-31, 2026" → take the end day
       const rangeMatch = s.match(/([A-Za-z]+)\s+\d+[-–]\s*(\d+),?\s*(\d{4})/);
       if (rangeMatch) {
-        d = new Date(`${rangeMatch[1]} ${rangeMatch[2]}, ${rangeMatch[3]}`);
-        if (!isNaN(d)) return d;
+        const d = safeParse(`${rangeMatch[1]} ${rangeMatch[2]}, ${rangeMatch[3]}`);
+        if (d) return d;
       }
-      // "Jan 15 2026" or "15 Jan 2026"
-      const parts = s.replace(/[,\/\-]/g,' ').split(/\s+/).filter(Boolean);
-      if (parts.length >= 3) {
-        d = new Date(parts.join(' '));
-        if (!isNaN(d)) return d;
-      }
+
+      // ⑤ Loose tokens: "Jan 15 2026" / "15 Jan 2026"
+      const parts = s.replace(/[,\/]/g,' ').split(/\s+/).filter(Boolean);
+      if (parts.length >= 3) { const d = safeParse(parts.join(' ')); if (d) return d; }
+
       return null;
     }
-    // Returns a formatted string of just the END date from a range for display
+    // Returns a clean "MMM D, YYYY" string for the expiry end-date of a range
     function insEndDateDisplay(dateStr) {
       if (!dateStr || dateStr === 'null') return null;
       const d = parseInsDate(dateStr);
-      if (!d) return String(dateStr);
+      if (!d) return null;
       return d.toLocaleDateString('en-PH', { year:'numeric', month:'short', day:'numeric' });
     }
     function insStatus(insDateStr) {
