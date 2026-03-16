@@ -708,141 +708,131 @@ const firebaseConfig = {
 
     // ══ PRINT ══
     function printRecord(type, id) {
-      const today = new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
-      let title='', rows='';
+      const now = new Date();
+      const datePrinted = now.toLocaleDateString('en-PH',{day:'2-digit',month:'2-digit',year:'numeric'})
+                        + ' ' + now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:false});
+      let subtitle='', dept='', sections='';
+
+      const row=(label,val,highlight='')=>{
+        if(!val||String(val).trim()===''||val==='null') return '';
+        const style = highlight==='green'?'color:#1a7a2e;font-weight:700':
+                      highlight==='red'?'color:#c0392b;font-weight:700':'';
+        return `<tr>
+          <td class="rl">${label}:</td>
+          <td class="rv" style="${style}">${val}</td>
+        </tr>`;
+      };
+      const secHead=(label)=>`<tr class="sec-head"><td colspan="2">${label}</td></tr>`;
 
       if (type==='vehicle') {
         const v = S.vehicles.find(x=>x.id===id); if(!v) return;
-        const hist = S.history.filter(h=>h.engine_no===v.engine_no);
-        const totalSpent = hist.reduce((s,h)=>s+parseAmt(h.amount||'0'),0);
-        title = 'VEHICLE RECORD';
-        const row = (label,val)=>val&&String(val).trim()&&val!=='null'?`<tr><td class="pl">${label}</td><td class="pv">${val}</td></tr>`:'';
-        rows = `
-          <div class="psec"><div class="psec-title">VEHICLE INFORMATION</div><table class="ptable">
-            ${row('Vehicle Name',v.vehicle_name)}${row('Plate No',v.plate_no)}${row('Department',v.department)}
-            ${row('Make / Brand',v.make)}${row('Series',v.series)}${row('Year Model',v.year_model)}
-            ${row('Denomination',v.denomination)}${row('Body Type',v.body_type)}${row('Fuel Type',v.fuel)}
-          </table></div>
-          <div class="psec"><div class="psec-title">REGISTRATION DETAILS</div><table class="ptable">
-            ${row('Engine No',v.engine_no)}${row('Chassis No',v.chassis_no)}${row('MV File No',v.mv_file_no)}
-            ${row('Conduction No',v.conduction_no)}${row('O.R No',v.or_no)}${row('O.R Date',fmtDate(v.or_date))}
-            ${row('O.R Amount',v.or_amt?'₱'+v.or_amt:null)}
-          </table></div>
-          <div class="psec"><div class="psec-title">WEIGHT & CAPACITY</div><table class="ptable">
-            ${row('Gross Weight (kg)',v.gross_wt)}${row('Net Weight (kg)',v.net_wt)}
-            ${row('Shipping Weight (kg)',v.shipping_wt)}${row('Net Capacity',v.net_capacity)}
-          </table></div>
-          <div class="psec"><div class="psec-title">ACQUISITION & INSURANCE</div><table class="ptable">
-            ${row('Owner',v.owner_name)}${row('Contact',v.contact)}${row('Address',v.address)}
-            ${row('Acquisition Date',fmtDate(v.acquisition_date))}${row('Acquisition Cost',v.acquisition_cost?'₱'+v.acquisition_cost:null)}
-            ${row('GSIS Month',v.gsis_insurance_month)}${row('GSIS Status',v.gsis_remarks)}
-          </table></div>
-          ${hist.length?`<div class="psec"><div class="psec-title">MAINTENANCE SUMMARY</div><table class="ptable">
-            <tr><td class="pl">Total Records</td><td class="pv">${hist.length}</td></tr>
-            <tr><td class="pl">Total Cost</td><td class="pv">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</td></tr>
-          </table></div>`:''}`;
+        subtitle = 'Vehicle Information Report';
+        dept = v.department||'';
+        const gsisCls = (v.gsis_remarks||'').toLowerCase().includes('not')?'red':
+                        (v.gsis_remarks||'').toLowerCase().includes('insured')?'green':'';
+        sections = `
+          ${row('Plate Number', v.plate_no)}
+          ${row('Vehicle Name', v.vehicle_name)}
+          ${row('Department',   v.department)}
+          ${row('Insurance Date', v.gsis_insurance_month)}
+          ${row('GSIS Status',   v.gsis_remarks, gsisCls)}
+          ${secHead('TECHNICAL DETAILS')}
+          ${row('MV File No',          v.mv_file_no)}
+          ${row('Conduction No',        v.conduction_no)}
+          ${row('Engine No',            v.engine_no)}
+          ${row('Chassis No',           v.chassis_no)}
+          ${row('Denomination',         v.denomination)}
+          ${row('Piston Displacement',  v.piston_displacement)}
+          ${row('No. of Cylinders',     v.cylinders)}
+          ${row('Fuel',                 v.fuel)}
+          ${row('Make',                 v.make)}
+          ${row('Series',               v.series)}
+          ${row('Body Type',            v.body_type)}
+          ${row('Year Model',           v.year_model)}
+          ${secHead('WEIGHT INFORMATION')}
+          ${row('Gross Weight',   v.gross_wt)}
+          ${row('Net Weight',     v.net_wt)}
+          ${row('Shipping Weight',v.shipping_wt)}
+          ${row('Net Capacity',   v.net_capacity)}
+          ${secHead('OWNER INFORMATION')}
+          ${row("Complete Owner's Name", v.owner_name)}
+          ${row('Telephone/Contact',     v.contact)}
+          ${row('Complete Address',      v.address)}
+          ${secHead('REGISTRATION INFORMATION')}
+          ${row('O.R. No',   v.or_no)}
+          ${row('O.R. Date', fmtDate(v.or_date))}
+          ${row('Amount',    v.or_amt)}`;
       } else {
         const h = S.history.find(x=>x.id===id); if(!h) return;
         const vi = getVehicleInfo(h.engine_no);
         const parts = parseParts(h.parts);
         const total = parseAmt(h.amount||'0');
-        title = 'MAINTENANCE RECORD';
-        const row = (label,val)=>val&&String(val).trim()&&val!=='null'?`<tr><td class="pl">${label}</td><td class="pv">${val}</td></tr>`:'';
-        rows = `
-          <div class="psec"><div class="psec-title">MAINTENANCE DETAILS</div><table class="ptable">
-            ${row('Vehicle Name',vi.name)}${row('Plate No',vi.plate)}${row('Engine No',h.engine_no)}
-            ${row('Date',fmtDate(h.maintenance_date))}${row('Maintenance Conducted',h.maintenance_conducted)}
-          </table></div>
-          ${parts.length?`<div class="psec"><div class="psec-title">PARTS & MATERIALS</div>
-            <table class="ptable" style="width:100%">
-              <thead><tr><th class="pl" style="text-align:left;padding:6px 10px;background:#f0f0f0">Item</th><th style="text-align:center;padding:6px 10px;background:#f0f0f0">Qty</th><th style="text-align:center;padding:6px 10px;background:#f0f0f0">Unit</th><th style="text-align:right;padding:6px 10px;background:#f0f0f0">Price (₱)</th></tr></thead>
-              <tbody>${parts.map(p=>`<tr><td style="padding:5px 10px">${p.name}</td><td style="text-align:center;padding:5px 10px">${p.qty}</td><td style="text-align:center;padding:5px 10px">${p.unit}</td><td style="text-align:right;padding:5px 10px">${parseFloat(p.price||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</td></tr>`).join('')}</tbody>
-            </table></div>`:''}
-          <div class="psec"><div class="psec-title">COST SUMMARY</div><table class="ptable">
-            <tr><td class="pl" style="font-weight:700">TOTAL AMOUNT</td><td class="pv" style="font-weight:700;font-size:15px">₱${total.toLocaleString('en-PH',{minimumFractionDigits:2})}</td></tr>
-          </table></div>`;
+        subtitle = 'Maintenance Record Report';
+        dept = vi.name||'';
+        sections = `
+          ${row('Vehicle Name',          vi.name)}
+          ${row('Plate No',              vi.plate)}
+          ${row('Engine No',             h.engine_no)}
+          ${row('Date',                  fmtDate(h.maintenance_date))}
+          ${row('Maintenance Conducted', h.maintenance_conducted)}
+          ${parts.length ? `${secHead('PARTS & MATERIALS')}
+            ${parts.map(p=>row(p.name, `${p.qty} ${p.unit} — ₱${parseFloat(p.price||0).toLocaleString('en-PH',{minimumFractionDigits:2})}`)).join('')}` : ''}
+          ${secHead('COST SUMMARY')}
+          ${row('Total Amount', '₱'+total.toLocaleString('en-PH',{minimumFractionDigits:2}))}`;
       }
 
-      const win = window.open('','_blank','width=900,height=700');
-      win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-      <title>${title} — Municipality of Balayan</title>
+      const win = window.open('','_blank','width=900,height=750');
+      win.document.write(`<!DOCTYPE html><html><head>
+      <meta charset="UTF-8">
+      <title>${subtitle} — Municipality of Balayan</title>
       <style>
         *{box-sizing:border-box;margin:0;padding:0;}
-        body{font-family:'Arial',sans-serif;font-size:12px;color:#111;background:#fff;padding:0;}
-        .page{width:210mm;min-height:297mm;margin:0 auto;padding:16mm 18mm 20mm;}
-        /* ── LETTERHEAD ── */
-        .lh{display:flex;align-items:center;justify-content:center;gap:16px;padding-bottom:12px;border-bottom:3px double #1a3a6e;margin-bottom:6px;}
-        .lh-seal{width:70px;height:70px;}
-        .lh-center{text-align:center;flex:1;}
-        .lh-republic{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#444;}
-        .lh-province{font-size:10.5px;color:#444;margin:1px 0;}
-        .lh-muni{font-size:20px;font-weight:900;color:#1a3a6e;letter-spacing:1px;text-transform:uppercase;line-height:1.1;}
-        .lh-office{font-size:10.5px;color:#555;margin-top:2px;}
-        .lh-right{text-align:right;font-size:10px;color:#555;min-width:110px;}
-        /* ── DOC HEADER ── */
-        .doc-title{text-align:center;margin:14px 0 4px;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#1a3a6e;}
-        .doc-sub{text-align:center;font-size:10px;color:#666;margin-bottom:14px;letter-spacing:.3px;}
-        .divider{border:none;border-top:1px solid #bbb;margin:10px 0;}
-        /* ── SECTIONS ── */
-        .psec{margin-bottom:14px;}
-        .psec-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#1a3a6e;border-bottom:1.5px solid #1a3a6e;padding-bottom:3px;margin-bottom:6px;}
-        .ptable{width:100%;border-collapse:collapse;}
-        .ptable tr{border-bottom:1px solid #e8e8e8;}
-        .ptable tr:last-child{border-bottom:none;}
-        .pl{padding:5px 10px;font-size:11px;color:#555;width:38%;vertical-align:top;font-weight:600;}
-        .pv{padding:5px 10px;font-size:11.5px;color:#111;vertical-align:top;}
-        /* ── SIGNATURE ── */
-        .sig-block{margin-top:28px;display:flex;justify-content:space-between;gap:20px;}
-        .sig-box{flex:1;text-align:center;}
-        .sig-line{border-top:1px solid #333;margin:36px 16px 4px;}
-        .sig-name{font-size:11.5px;font-weight:700;text-transform:uppercase;}
-        .sig-title{font-size:10px;color:#555;}
+        body{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;}
+        .page{width:210mm;min-height:297mm;margin:0 auto;padding:14mm 16mm 18mm;}
+
+        /* ── HEADER ── */
+        .lh{display:flex;align-items:center;gap:14px;padding-bottom:10px;border-bottom:2px solid #111;margin-bottom:12px;}
+        .lh-logo{width:72px;height:72px;object-fit:contain;flex-shrink:0;}
+        .lh-text{flex:1;text-align:center;}
+        .lh-system{font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#111;}
+        .lh-subtitle{font-size:12px;color:#333;margin-top:2px;}
+        .lh-date{font-size:11px;color:#555;margin-top:3px;}
+        .lh-dept{font-size:13px;font-weight:700;margin-top:5px;color:#111;}
+
+        /* ── TABLE ── */
+        .rtable{width:100%;border-collapse:collapse;margin-top:4px;}
+        .rtable tr{border-bottom:1px solid #e0e0e0;}
+        .rtable .rl{padding:5px 10px 5px 0;font-size:11.5px;font-weight:700;color:#111;width:36%;text-align:right;vertical-align:top;}
+        .rtable .rv{padding:5px 0 5px 12px;font-size:11.5px;color:#111;vertical-align:top;}
+        .sec-head td{background:#d0d0d0;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;padding:5px 10px;text-align:center;color:#111;border-bottom:1px solid #aaa;}
+
         /* ── FOOTER ── */
-        .pfooter{margin-top:20px;border-top:1px solid #ccc;padding-top:6px;font-size:9px;color:#888;display:flex;justify-content:space-between;}
+        .pfooter{margin-top:24px;font-size:9px;color:#888;text-align:center;border-top:1px solid #ccc;padding-top:6px;}
+
         @media print{
           body{margin:0;}
-          .page{padding:12mm 16mm 16mm;width:100%;}
+          .page{padding:10mm 14mm 14mm;width:100%;}
           @page{size:A4;margin:0;}
         }
       </style></head><body>
       <div class="page">
         <div class="lh">
-          <img class="lh-seal" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/PH_Seal_of_Balayan%2C_Batangas.svg/240px-PH_Seal_of_Balayan%2C_Batangas.svg.png" onerror="this.style.display='none'">
-          <div class="lh-center">
-            <div class="lh-republic">Republic of the Philippines</div>
-            <div class="lh-province">Province of Batangas</div>
-            <div class="lh-muni">Municipality of Balayan</div>
-            <div class="lh-office">Vehicle Management System — Official Record</div>
-          </div>
-          <div class="lh-right">Date Printed:<br><strong>${today}</strong></div>
-        </div>
-        <div class="doc-title">${title}</div>
-        <div class="doc-sub">Vehicle Maintenance System — Municipality of Balayan, Batangas</div>
-        <hr class="divider">
-        ${rows}
-        <div class="sig-block">
-          <div class="sig-box">
-            <div class="sig-line"></div>
-            <div class="sig-name">Prepared by</div>
-            <div class="sig-title">VMO Staff</div>
-          </div>
-          <div class="sig-box">
-            <div class="sig-line"></div>
-            <div class="sig-name">Noted by</div>
-            <div class="sig-title">Department Head</div>
-          </div>
-          <div class="sig-box">
-            <div class="sig-line"></div>
-            <div class="sig-name">Approved by</div>
-            <div class="sig-title">Municipal Mayor</div>
+          <img class="lh-logo" src="/vms/logo.png" onerror="this.style.display='none'">
+          <div class="lh-text">
+            <div class="lh-system">Vehicle Maintenance System</div>
+            <div class="lh-subtitle">${subtitle}</div>
+            <div class="lh-date">${datePrinted}</div>
+            ${dept?`<div class="lh-dept">${dept}</div>`:''}
           </div>
         </div>
-        <div class="pfooter">
-          <span>VMS — Municipality of Balayan, Batangas</span>
-          <span>Printed: ${today}</span>
-        </div>
+        <table class="rtable"><tbody>${sections}</tbody></table>
+        <div class="pfooter">Municipality of Balayan, Batangas — Vehicle Maintenance System</div>
       </div>
-      <script>window.onload=()=>{window.print();}<\/script>
+      <script>
+        var img=document.querySelector('.lh-logo');
+        if(img){img.onload=function(){window.print();};img.onerror=function(){window.print();};}
+        else{window.print();}
+      <\/script>
       </body></html>`);
       win.document.close();
     }
