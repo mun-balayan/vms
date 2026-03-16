@@ -519,16 +519,14 @@ const firebaseConfig = {
         <div class="stats-grid">
           <div class="stat-card" style="animation-delay:.0s"><div class="stat-icon">🚗</div><div class="stat-num">${veh.length}</div><div class="stat-label">Total Vehicles</div></div>
           <div class="stat-card" style="animation-delay:.05s"><div class="stat-icon">🔧</div><div class="stat-num">${hist.length}</div><div class="stat-label">Maintenance Logs</div></div>
-          <div class="stat-card" style="animation-delay:.1s"><div class="stat-icon">💰</div><div class="stat-num" style="font-size:20px">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Maintenance Cost</div></div>
+          <div class="stat-card" style="animation-delay:.1s"><div class="stat-icon">💰</div><div class="stat-num" style="font-size:${totalSpent>=1000000000?'14px':totalSpent>=100000000?'16px':'20px'}">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Maintenance Cost</div></div>
+          <div class="stat-card" style="animation-delay:.15s"><div class="stat-icon">⛽</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">${Object.entries(byFuel).map(([f,c])=>`<div><div style="font-family:var(--font-head);font-size:22px;font-weight:700;color:var(--accent);line-height:1">${c}</div><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">${f}</div></div>`).join('')}</div><div class="stat-label" style="margin-top:6px">Fuel Types</div></div>
         </div>
         <div class="dash-grid">
           <div class="card"><div class="card-header"><div class="card-title">📁 By Department</div></div><div class="card-body">
             ${deptArr.map(([d,c])=>`<div class="bar-row"><div class="bar-label" title="${d}">${d}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c/maxD*100)}%"></div></div><div class="bar-val">${c}</div></div>`).join('')}
           </div></div>
-          <div class="card"><div class="card-header"><div class="card-title">⛽ Fuel Types</div></div><div class="card-body"><div class="fuel-chips">
-            ${Object.entries(byFuel).map(([f,c])=>`<div class="fuel-chip"><div class="fuel-chip-num">${c}</div><div class="fuel-chip-label">${f}</div></div>`).join('')}
-          </div></div></div>
-          <div class="card dash-full"><div class="card-header"><div class="card-title">🕐 Recent Maintenance</div><button class="btn btn-default btn-sm" onclick="switchPage('history')">View All →</button></div><div class="card-body" style="padding:0 18px;">
+          <div class="card"><div class="card-header"><div class="card-title">🕐 Recent Maintenance</div><button class="btn btn-default btn-sm" onclick="switchPage('history')">View All →</button></div><div class="card-body" style="padding:0 18px;">
             ${recentHist.map(h=>`<div class="recent-item" onclick="showHistoryModal('${h.id}')"><div><div class="recent-work">${h.maintenance_conducted||'-'}</div><div class="recent-meta">${h.plate_no||h.engine_no||''} · ${fmtDate(h.maintenance_date)}</div></div><div class="recent-amt">${h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):'-'}</div></div>`).join('')}
           </div></div>
         </div>`;

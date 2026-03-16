@@ -1,47 +1,44 @@
-// VMS Service Worker — caches the app shell for offline loading
-const CACHE = 'vms-v14';  // ← bump this number every time you upload a new index.html
+// VMS Service Worker — network-first so updates show automatically
+const CACHE = 'vms-v15';  // ← bump this number every time you upload a new index.html
 const ASSETS = [
   './',
   './index.html',
 ];
 
-// Install: cache the app shell
+// Install: pre-cache the app shell
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(c => c.addAll(ASSETS))
   );
-  self.skipWaiting();
+  self.skipWaiting(); // activate immediately
 });
 
-// Activate: clean old caches
+// Activate: wipe all old caches, then claim all clients right away
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim()) // take over open tabs immediately
   );
-  self.clients.claim();
 });
 
-// Fetch: serve from cache first for app shell, network first for everything else
+// Fetch: NETWORK FIRST for same-origin HTML.
+// Always try server first → cache on success → fallback to cache if offline.
+// Firebase, Google Fonts, CDN requests pass through untouched.
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // Only handle same-origin requests (the HTML)
   if (url.origin === location.origin) {
     e.respondWith(
-      caches.match(e.request).then(cached => {
-        const network = fetch(e.request).then(res => {
-          // Update cache with fresh copy
+      fetch(e.request)
+        .then(res => {
           if (res.ok) {
-            caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+            const clone = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, clone));
           }
           return res;
-        }).catch(() => cached); // fallback to cache if offline
-        // Return cache immediately if available, otherwise wait for network
-        return cached || network;
-      })
+        })
+        .catch(() => caches.match(e.request))
     );
   }
-  // Let Firebase, Google Fonts, and all other requests pass through normally
 });
