@@ -200,40 +200,7 @@ tbody td{padding:12px 14px;vertical-align:middle;}
 .toast.success{border-color:rgba(63,185,80,.4);color:var(--green);}
 .toast.error{border-color:rgba(248,81,73,.4);color:var(--red);}
 
-/* ── INSURANCE ALERTS ── */
-.ins-alert-bar{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:var(--radius);margin-bottom:8px;font-size:13px;font-weight:500;}
-.ins-alert-bar:last-child{margin-bottom:0;}
-.ins-alert-expired{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.25);color:var(--red);}
-.ins-alert-warning{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.25);color:#e3b341;}
-.ins-alert-ok{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);color:var(--green);}
-.ins-alert-icon{font-size:16px;flex-shrink:0;}
-.ins-alert-info{flex:1;min-width:0;}
-.ins-alert-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ins-alert-meta{font-size:11px;opacity:.8;margin-top:1px;}
-.ins-alert-days{font-family:var(--font-mono);font-size:12px;white-space:nowrap;flex-shrink:0;}
-.ins-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.ins-card-date{font-size:11px;color:var(--text2);font-family:var(--font-mono);margin-top:2px;}
-.alert-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.alert-chip{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;}
-.alert-chip-red{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.2);}
-.alert-chip-yellow{background:rgba(210,153,34,.12);color:#e3b341;border:1px solid rgba(210,153,34,.2);}
-.alert-chip-green{background:rgba(63,185,80,.12);color:var(--green);border:1px solid rgba(63,185,80,.2);}
-.ins-section-label{font-size:11px;color:var(--text2);font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;}
-/* Mobile overrides for insurance alerts */
-@media(max-width:768px){
-  .ins-alert-bar{padding:9px 12px;gap:8px;font-size:12.5px;}
-  .ins-alert-days{font-size:11px;}
-  .ins-alert-meta{font-size:10.5px;}
-  .alert-chip{font-size:11px;padding:5px 10px;}
-  .ins-card-date{display:block;}
-}
-@media(max-width:390px){
-  .ins-alert-bar{padding:8px 10px;gap:6px;font-size:12px;}
-  .ins-alert-icon{font-size:14px;}
-  .ins-alert-days{font-size:10.5px;}
-  .alert-chip{font-size:10.5px;padding:4px 8px;gap:3px;}
-  .alert-summary{gap:6px;}
-}
+
 
 /* ── OFFLINE BANNER ── */
 #offline-banner{
@@ -363,7 +330,6 @@ tbody td{padding:12px 14px;vertical-align:middle;}
       <div class="nav-section-label">Records</div>
       <button class="nav-item" id="snav-vehicles" onclick="switchPage('vehicles')"><span class="nav-icon">🚗</span>Vehicles<span class="nav-badge" id="badge-vehicles">—</span></button>
       <button class="nav-item" id="snav-history" onclick="switchPage('history')"><span class="nav-icon">🔧</span>Maintenance<span class="nav-badge" id="badge-history">—</span></button>
-      <button class="nav-item" id="snav-insurance" onclick="switchPage('insurance')"><span class="nav-icon">📋</span>Insurance<span class="nav-badge" id="badge-insurance">—</span></button>
     </nav>
     <div class="sidebar-footer">Municipality of Balayan, Batangas<br><span id="sidebar-time" style="font-family:var(--font-mono);"></span></div>
   </aside>
@@ -399,13 +365,6 @@ tbody td{padding:12px 14px;vertical-align:middle;}
         <div class="toolbar"><div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="h-search" placeholder="Search maintenance, vehicle, plate…" oninput="filterHistory()"></div></div>
         <div id="h-table-area"></div><div class="mobile-cards" id="h-cards"></div>
       </div>
-      <!-- INSURANCE -->
-      <div class="page" id="page-insurance">
-        <div class="page-header"><div class="page-title">📋 Insurance & Registration <span style="font-size:16px;color:var(--text2);font-family:var(--font-ui);font-weight:400;" id="ins-count"></span></div><div class="page-sub">GSIS insurance and LTO registration tracking</div></div>
-        <div class="toolbar"><div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="ins-search" placeholder="Search vehicle, plate, department…" oninput="filterInsurance()"></div></div>
-        <div class="pills" id="ins-pills"></div>
-        <div id="ins-table-area"></div><div class="mobile-cards" id="ins-cards"></div>
-      </div>
     </div>
 
     <div id="bottom-nav">
@@ -413,7 +372,6 @@ tbody td{padding:12px 14px;vertical-align:middle;}
         <button class="bnav-btn active" id="bnav-dashboard" onclick="switchPage('dashboard')"><span class="bnav-icon">📊</span>Dashboard</button>
         <button class="bnav-btn" id="bnav-vehicles"  onclick="switchPage('vehicles')"><span class="bnav-icon">🚗</span>Vehicles</button>
         <button class="bnav-btn" id="bnav-history"   onclick="switchPage('history')"><span class="bnav-icon">🔧</span>History</button>
-        <button class="bnav-btn" id="bnav-insurance" onclick="switchPage('insurance')"><span class="bnav-icon">📋</span>Insurance</button>
       </div>
     </div>
   </div>
@@ -424,7 +382,6 @@ tbody td{padding:12px 14px;vertical-align:middle;}
 <!-- MODALS -->
 <div class="modal-overlay" id="modal-vehicle" onclick="closeOverlay(event,'modal-vehicle')"><div class="modal"><div class="modal-header"><div class="modal-title" id="vmod-title">Vehicle</div><button class="modal-close" onclick="closeModal('modal-vehicle')">✕</button></div><div class="modal-body" id="vmod-body"></div></div></div>
 <div class="modal-overlay" id="modal-history" onclick="closeOverlay(event,'modal-history')"><div class="modal"><div class="modal-header"><div class="modal-title">Maintenance Record</div><button class="modal-close" onclick="closeModal('modal-history')">✕</button></div><div class="modal-body" id="hmod-body"></div></div></div>
-<div class="modal-overlay" id="modal-insurance" onclick="closeOverlay(event,'modal-insurance')"><div class="modal"><div class="modal-header"><div class="modal-title" id="imod-title">Insurance Record</div><button class="modal-close" onclick="closeModal('modal-insurance')">✕</button></div><div class="modal-body" id="imod-body"></div></div></div>
 <div class="modal-overlay" id="modal-form"    onclick="closeOverlay(event,'modal-form')"><div class="modal"><div class="modal-header"><div class="modal-title" id="form-title">Add Record</div><button class="modal-close" onclick="closeModal('modal-form')">✕</button></div><div class="modal-body" id="form-body"></div></div></div>
 <div class="toast" id="toast"></div>
 <!-- FAB (mobile only) -->
@@ -483,16 +440,12 @@ const firebaseConfig = {
       vehicles:[], depts:[],
       vFilter:{search:'',dept:'All'},
       history:[], hSearch:'',
-      insurance:[], insFilter:'All', insSearch:'',
       editId:null, editCol:null,
     };
-    const MONTHS=['All','JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
-
     // ══ FIRESTORE HELPERS ══
     const Col = {
       vehicles:  () => collection(db,'vehicles'),
       history:   () => collection(db,'vehicle_history'),
-      insurance: () => collection(db,'vehicle_insurance'),
     };
 
     async function getAll(colName) {
@@ -503,10 +456,10 @@ const firebaseConfig = {
       return await addDoc(Col[colName](), data);
     }
     async function updateRec(colName, id, data) {
-      return await updateDoc(doc(db, colName==='history'?'vehicle_history':colName==='insurance'?'vehicle_insurance':'vehicles', id), data);
+      return await updateDoc(doc(db, colName==='history'?'vehicle_history':'vehicles', id), data);
     }
     async function deleteRec(colName, id) {
-      const colPath = colName==='history'?'vehicle_history':colName==='insurance'?'vehicle_insurance':'vehicles';
+      const colPath = colName==='history'?'vehicle_history':'vehicles';
       return await deleteDoc(doc(db, colPath, id));
     }
 
@@ -519,7 +472,7 @@ const firebaseConfig = {
     setInterval(updateTime,1000); updateTime();
 
     // ══ NAVIGATION ══
-    const PAGE_TITLES={dashboard:'Dashboard',vehicles:'Vehicles',history:'Maintenance History',insurance:'Insurance & Registration'};
+    const PAGE_TITLES={dashboard:'Dashboard',vehicles:'Vehicles',history:'Maintenance History'};
     function switchPage(pg) {
       S.page=pg;
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -532,7 +485,6 @@ const firebaseConfig = {
       if(pg==='dashboard') loadDashboard();
       else if(pg==='vehicles') loadVehicles();
       else if(pg==='history') loadHistory();
-      else if(pg==='insurance') loadInsurance();
     }
     window.switchPage=switchPage;
     window.refreshCurrent=()=>switchPage(S.page);
@@ -541,111 +493,11 @@ const firebaseConfig = {
     window.toggleSidebar=toggleSidebar; window.closeSidebar=closeSidebar;
 
     // ══ DASHBOARD ══
-    // ── Insurance status helpers ──
-    // Normalise a raw date string: converts "JULY 1, 2026" → "July 1, 2026" so
-    // all browsers can parse it reliably.
-    function normDateStr(s) {
-      return s.replace(/\b([A-Z]{2,})\b/g, w => w.charAt(0) + w.slice(1).toLowerCase());
-    }
-    function safeParse(s) {
-      const d = new Date(normDateStr(s.trim()));
-      return isNaN(d) ? null : d;
-    }
-    function parseInsDate(dateStr) {
-      // Always returns the END date for ranges (= the expiry date).
-      // Handles formats stored in Firestore:
-      //   "JULY 1, 2025 - JULY 1, 2026"       ← most common: MONTH D, YYYY - MONTH D, YYYY
-      //   "July 11, 2025 to July 11, 2026"     ← "to" separator
-      //   "July 11, 2025 – July 11, 2026"      ← em-dash
-      //   "January 1-31, 2026"                 ← same-month range
-      //   "2026-01-31" / "Jan 15, 2026"        ← single dates
-      if (!dateStr || dateStr === 'null') return null;
-      const s = String(dateStr).trim();
-
-      // ① "X to Y" → take Y
-      const toMatch = s.match(/^.+?\s+to\s+(.+)$/i);
-      if (toMatch) { const d = safeParse(toMatch[1]); if (d) return d; }
-
-      // ② "MONTH D, YYYY - MONTH D, YYYY" or em-dash variant → take the part after the separator
-      // The separator is " - " or " – " surrounded by spaces (not a date-internal hyphen)
-      const dashRangeMatch = s.match(/^.+?\s+[-–]\s+([A-Za-z].+)$/);
-      if (dashRangeMatch) { const d = safeParse(dashRangeMatch[1]); if (d) return d; }
-
-      // ③ Single date direct parse
-      const direct = safeParse(s);
-      if (direct) return direct;
-
-      // ④ Same-month range "January 1-31, 2026" → take the end day
-      const rangeMatch = s.match(/([A-Za-z]+)\s+\d+[-–]\s*(\d+),?\s*(\d{4})/);
-      if (rangeMatch) {
-        const d = safeParse(`${rangeMatch[1]} ${rangeMatch[2]}, ${rangeMatch[3]}`);
-        if (d) return d;
-      }
-
-      // ⑤ Loose tokens: "Jan 15 2026" / "15 Jan 2026"
-      const parts = s.replace(/[,\/]/g,' ').split(/\s+/).filter(Boolean);
-      if (parts.length >= 3) { const d = safeParse(parts.join(' ')); if (d) return d; }
-
-      return null;
-    }
-    // Returns a clean "MMM D, YYYY" string for the expiry end-date of a range
-    function insEndDateDisplay(dateStr) {
-      if (!dateStr || dateStr === 'null') return null;
-      const d = parseInsDate(dateStr);
-      if (!d) return null;
-      return d.toLocaleDateString('en-PH', { year:'numeric', month:'short', day:'numeric' });
-    }
-    // Convert a Date object → "YYYY-MM-DD" for <input type="date"> value
-    function toInputDate(d) {
-      if (!d || isNaN(d)) return '';
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    }
-    // Try to split a legacy "DATE1 - DATE2" or "DATE1 to DATE2" string into {from, to} input values
-    function splitLegacyInsDate(str) {
-      if (!str) return { from:'', to:'' };
-      const s = String(str).trim();
-      let pts = s.split(/\s+to\s+/i);
-      if (pts.length < 2) pts = s.split(/\s+[-–]\s+/);
-      if (pts.length === 2) {
-        const df = safeParse(pts[0]), dt = safeParse(pts[1]);
-        return { from: df ? toInputDate(df) : '', to: dt ? toInputDate(dt) : '' };
-      }
-      return { from:'', to:'' };
-    }
-    // Returns the best expiry date string for a record (new field first, legacy fallback)
-    function getInsExpiry(i) {
-      return i.insurance_date_to || i.insurance_date || null;
-    }
-    // Returns a human-readable date range for display
-    function insDateRangeDisplay(i) {
-      if (i.insurance_date_from || i.insurance_date_to) {
-        const from = i.insurance_date_from ? fmtDate(i.insurance_date_from) : '—';
-        const to   = i.insurance_date_to   ? fmtDate(i.insurance_date_to)   : '—';
-        return `${from} → ${to}`;
-      }
-      return i.insurance_date || i.insurance_month || '';
-    }
-    function insStatus(insDateStr) {
-      const d = parseInsDate(insDateStr);
-      if (!d) return { type: 'unknown', days: null };
-      const today = new Date(); today.setHours(0,0,0,0); d.setHours(0,0,0,0);
-      const diff = Math.round((d - today) / 86400000);
-      if (diff < 0)   return { type: 'expired',  days: Math.abs(diff) };
-      if (diff <= 14) return { type: 'warning',  days: diff };
-      return { type: 'ok', days: diff };
-    }
-    function insStatusBadge(status) {
-      if (status.type === 'expired') return `<span class="badge badge-red">🔴 Expired ${status.days}d ago</span>`;
-      if (status.type === 'warning') return `<span class="badge badge-amber">🟡 ${status.days === 0 ? 'Due Today' : `Due in ${status.days}d`}</span>`;
-      if (status.type === 'ok')      return `<span class="badge badge-green">🟢 ${status.days}d left</span>`;
-      return `<span class="badge badge-gray">—</span>`;
-    }
-
     async function loadDashboard() {
       const el=document.getElementById('dashboard-inner');
       el.innerHTML='<div class="loading"><div class="loading-spinner"></div><br>Loading...</div>';
-      const [veh,hist,ins]=await Promise.all([getAll('vehicles'),getAll('history'),getAll('insurance')]);
-      S.vehicles=veh; S.history=hist; S.insurance=ins;
+      const [veh,hist]=await Promise.all([getAll('vehicles'),getAll('history')]);
+      S.vehicles=veh; S.history=hist;
 
       // ── Stats ──
       const totalSpent=hist.reduce((s,h)=>s+parseAmt(h.amount||'0'),0);
@@ -657,52 +509,14 @@ const firebaseConfig = {
       veh.forEach(v=>{const f=v.fuel||'N/A';byFuel[f]=(byFuel[f]||0)+1;});
       const recentHist=[...hist].sort((a,b)=>new Date(b.maintenance_date)-new Date(a.maintenance_date)).slice(0,5);
 
-      // ── Insurance status categorization ──
-      const now = new Date(); now.setHours(0,0,0,0);
-      const insWith = ins.map(i => ({ ...i, _status: insStatus(getInsExpiry(i)) }));
-      const expired  = insWith.filter(i => i._status.type === 'expired').sort((a,b) => b._status.days - a._status.days);
-      const warning  = insWith.filter(i => i._status.type === 'warning').sort((a,b) => a._status.days - b._status.days);
-      const upcoming = insWith.filter(i => i._status.type === 'ok').sort((a,b) => a._status.days - b._status.days).slice(0,6);
-      const alertList = [...expired, ...warning].slice(0, 10);
-      const todayStr = now.toLocaleDateString('en-PH', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
       document.getElementById('badge-vehicles').textContent=veh.length;
       document.getElementById('badge-history').textContent=hist.length;
-      document.getElementById('badge-insurance').textContent=ins.length;
-
-      // ── Insurance row renderer ──
-      function insAlertRow(i) {
-        const s = i._status;
-        const cls = s.type==='expired'?'ins-alert-expired':s.type==='warning'?'ins-alert-warning':'ins-alert-ok';
-        const icon = s.type==='expired'?'🔴':s.type==='warning'?'🟡':'🟢';
-        const daysLabel = s.type==='expired'?`Expired ${s.days}d ago`:s.days===0?'Due Today':`Due in ${s.days}d`;
-        return `<div class="ins-alert-bar ${cls}">
-          <span class="ins-alert-icon">${icon}</span>
-          <div class="ins-alert-info">
-            <div class="ins-alert-name">${i.vehicle_name||'-'} <span style="opacity:.7;font-weight:400;font-size:11px">${i.plate_number||''}</span></div>
-            <div class="ins-alert-meta">${insDateRangeDisplay(i)} · Expires: ${insEndDateDisplay(getInsExpiry(i))||'—'}</div>
-          </div>
-          <div class="ins-alert-days">${daysLabel}</div>
-        </div>`;
-      }
-
-      function insUpcomingRow(i) {
-        return `<div class="ins-alert-bar ins-alert-ok">
-          <span class="ins-alert-icon">🟢</span>
-          <div class="ins-alert-info">
-            <div class="ins-alert-name">${i.vehicle_name||'-'} <span style="opacity:.7;font-weight:400;font-size:11px">${i.plate_number||''}</span></div>
-            <div class="ins-alert-meta">${insDateRangeDisplay(i)} · Expires: ${insEndDateDisplay(getInsExpiry(i))||'—'}</div>
-          </div>
-          <div class="ins-alert-days">${i._status.days}d left</div>
-        </div>`;
-      }
 
       el.innerHTML=`
         <div class="stats-grid">
           <div class="stat-card" style="animation-delay:.0s"><div class="stat-icon">🚗</div><div class="stat-num">${veh.length}</div><div class="stat-label">Total Vehicles</div></div>
           <div class="stat-card" style="animation-delay:.05s"><div class="stat-icon">🔧</div><div class="stat-num">${hist.length}</div><div class="stat-label">Maintenance Logs</div></div>
-          <div class="stat-card" style="animation-delay:.1s"><div class="stat-icon">📋</div><div class="stat-num">${ins.length}</div><div class="stat-label">Insured Units</div></div>
-          <div class="stat-card" style="animation-delay:.15s"><div class="stat-icon">💰</div><div class="stat-num" style="font-size:20px">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Maintenance Cost</div></div>
+          <div class="stat-card" style="animation-delay:.1s"><div class="stat-icon">💰</div><div class="stat-num" style="font-size:20px">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Maintenance Cost</div></div>
         </div>
         <div class="dash-grid">
           <div class="card"><div class="card-header"><div class="card-title">📁 By Department</div></div><div class="card-body">
@@ -714,34 +528,11 @@ const firebaseConfig = {
           <div class="card dash-full"><div class="card-header"><div class="card-title">🕐 Recent Maintenance</div><button class="btn btn-default btn-sm" onclick="switchPage('history')">View All →</button></div><div class="card-body" style="padding:0 18px;">
             ${recentHist.map(h=>`<div class="recent-item" onclick="showHistoryModal('${h.id}')"><div><div class="recent-work">${h.maintenance_conducted||'-'}</div><div class="recent-meta">${h.plate_no||h.engine_no||''} · ${fmtDate(h.maintenance_date)}</div></div><div class="recent-amt">${h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):'-'}</div></div>`).join('')}
           </div></div>
-
-          <!-- ── INSURANCE STATUS CARD ── -->
           <div class="card dash-full">
-            <div class="card-header">
-              <div>
-                <div class="card-title">🛡 Insurance & Registration Status</div>
-                <div class="ins-card-date">📅 ${todayStr}</div>
-              </div>
-              <button class="btn btn-default btn-sm" onclick="switchPage('insurance')" style="flex-shrink:0;">View All →</button>
-            </div>
-            <div class="card-body">
-              <!-- Summary chips -->
-              <div class="alert-summary">
-                <div class="alert-chip alert-chip-red">🔴 ${expired.length} Expired</div>
-                <div class="alert-chip alert-chip-yellow">🟡 ${warning.length} Due within 2 weeks</div>
-                <div class="alert-chip alert-chip-green">🟢 ${ins.length - expired.length - warning.length} Active</div>
-              </div>
-
-              ${alertList.length ? `
-                <div class="ins-section-label">⚠ Requires Attention</div>
-                ${alertList.map(insAlertRow).join('')}
-                <div style="height:14px;"></div>
-              ` : `<div style="padding:8px 0 10px;font-size:13px;color:var(--green);">✅ No expired or near-expiry registrations.</div>`}
-
-              ${upcoming.length ? `
-                <div class="ins-section-label" style="margin-top:4px;">📋 Upcoming Renewals</div>
-                ${upcoming.map(insUpcomingRow).join('')}
-              ` : ''}
+            <div class="card-header"><div class="card-title">🛡 Insurance Monitor</div></div>
+            <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <div style="font-size:13px;color:var(--text2);max-width:400px;">Insurance & registration tracking has moved to a dedicated app. View expiry status, add and manage insurance records there.</div>
+              <a href="https://mun-balayan.github.io/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#000;border:none;border-radius:var(--radius);padding:9px 18px;font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .15s;" onmouseover="this.style.background='var(--accent2)'" onmouseout="this.style.background='var(--accent)'">📋 Open Insurance Monitor ↗</a>
             </div>
           </div>
         </div>`;
@@ -852,91 +643,22 @@ const firebaseConfig = {
     }
     window.showHistoryModal=showHistoryModal;
 
-    // ══ INSURANCE ══
-    async function loadInsurance(){
-      document.getElementById('ins-table-area').innerHTML='<div class="loading"><div class="loading-spinner"></div><br>Loading...</div>';
-      if(!S.insurance.length) S.insurance=await getAll('insurance');
-      document.getElementById('ins-count').textContent=`(${S.insurance.length})`;
-      renderInsPills(); renderInsTable(); renderInsCards();
-    }
-    function renderInsPills(){document.getElementById('ins-pills').innerHTML=MONTHS.map(m=>`<div class="pill ${m===S.insFilter?'active':''}" onclick="setInsFilter('${m}')">${m==='All'?'All':m.slice(0,3)}</div>`).join('');}
-    window.setInsFilter=m=>{S.insFilter=m;renderInsPills();renderInsTable();renderInsCards();};
-    function filteredIns(){
-      const q=S.insSearch.toLowerCase();
-      let list=S.insurance;
-      if(S.insFilter!=='All') list=list.filter(i=>(i.insurance_month||'').toUpperCase()===S.insFilter||(i.registration_month||'').toUpperCase()===S.insFilter);
-      if(q) list=list.filter(i=>[i.vehicle_name,i.plate_number,i.department,i.mv_file_no,i.insurance_month,i.remarks].join(' ').toLowerCase().includes(q));
-      return list;
-    }
-    function filterInsurance(){
-      S.insSearch=(document.getElementById('ins-search').value||'').toLowerCase();
-      document.getElementById('ins-count').textContent=`(${filteredIns().length})`;
-      renderInsTable(); renderInsCards();
-    }
-    window.filterInsurance=filterInsurance;
-    function renderInsTable(){
-      const list=filteredIns(); const el=document.getElementById('ins-table-area');
-      if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>No records found</div>';return;}
-      const s=i=>insStatus(getInsExpiry(i));
-      el.innerHTML=`<div class="table-wrap"><table><thead><tr><th>#</th><th>Vehicle</th><th class="hide-mobile">Dept</th><th>Plate</th><th class="hide-mobile">Insurance Period</th><th class="hide-mobile">Expiry</th><th>Status</th></tr></thead><tbody>
-        ${list.map(i=>{const st=s(i);const badge=st.type==='expired'?`<span class="badge badge-red">Expired</span>`:st.type==='warning'?`<span class="badge badge-amber">Due Soon</span>`:`<span class="badge badge-green">Active</span>`;return `<tr onclick="showInsuranceModal('${i.id}')"><td class="td-muted">${i.item_no||'-'}</td><td class="td-name">${i.vehicle_name||'-'}</td><td class="hide-mobile">${i.department?`<span class="badge badge-blue">${i.department}</span>`:'-'}</td><td class="td-mono">${i.plate_number||'-'}</td><td class="hide-mobile td-muted">${insDateRangeDisplay(i)}</td><td class="hide-mobile td-muted">${insEndDateDisplay(getInsExpiry(i))||'—'}</td><td>${badge}</td></tr>`;}).join('')}
-      </tbody></table></div>`;
-    }
-    function renderInsCards(){
-      const s=i=>insStatus(getInsExpiry(i));
-      document.getElementById('ins-cards').innerHTML=filteredIns().map((i,idx)=>{const st=s(i);const badge=st.type==='expired'?`<span class="badge badge-red">🔴 Expired</span>`:st.type==='warning'?`<span class="badge badge-amber">🟡 Due Soon</span>`:`<span class="badge badge-green">🟢 Active</span>`;return `<div class="m-card" style="animation-delay:${Math.min(idx,10)*0.02}s" onclick="showInsuranceModal('${i.id}')"><div class="flex-between gap-8"><div class="m-card-title">${i.vehicle_name||'-'}</div><span class="badge badge-amber">${i.plate_number||'-'}</span></div><div class="m-card-row" style="margin-top:6px;">${i.department?`<span class="badge badge-blue">${i.department}</span>`:''}<span>🛡 ${i.insurance_month||''}</span>${badge}</div><div style="font-size:11px;color:var(--text2);margin-top:4px">${insDateRangeDisplay(i)} · Expires: ${insEndDateDisplay(getInsExpiry(i))||'—'}</div></div>`;}).join('');
-    }
-
-    function showInsuranceModal(id) {
-      const i = S.insurance.find(x => x.id === id); if (!i) return;
-      const st = insStatus(getInsExpiry(i));
-      const statusBadge = st.type==='expired'
-        ? `<span class="badge badge-red">🔴 Expired ${st.days}d ago</span>`
-        : st.type==='warning'
-        ? `<span class="badge badge-amber">🟡 Due in ${st.days === 0 ? 'Today' : st.days+'d'}</span>`
-        : `<span class="badge badge-green">🟢 Active — ${st.days}d left</span>`;
-      document.getElementById('imod-title').textContent = i.vehicle_name || 'Insurance Record';
-      document.getElementById('imod-body').innerHTML = `
-        <div class="v-hero">
-          <div class="v-hero-icon">📋</div>
-          <div class="v-hero-name">${i.vehicle_name||'-'}</div>
-          <div class="v-hero-badges"><span class="badge badge-amber">${i.plate_number||'No Plate'}</span>${i.department?`<span class="badge badge-blue">${i.department}</span>`:''} ${statusBadge}</div>
-        </div>
-        <div class="detail-section">
-          <div class="detail-section-title">Registration Details</div>
-          ${dr('Item No', i.item_no)}
-          ${dr('MV File No', i.mv_file_no, 'mono')}
-          ${dr('Insurance Month', i.insurance_month)}
-          ${dr('Insurance From', i.insurance_date_from ? fmtDate(i.insurance_date_from) : (i.insurance_date ? i.insurance_date : null))}
-          ${dr('Insurance To (Expiry)', i.insurance_date_to ? fmtDate(i.insurance_date_to) : insEndDateDisplay(i.insurance_date))}
-          ${dr('Registration Month', i.registration_month)}
-          ${dr('Registration Date', fmtDate(i.registration_date))}
-          ${dr('Remarks', i.remarks)}
-        </div>
-        <div class="form-actions" style="padding-top:12px;border-top:1px solid var(--border);margin-top:4px;">
-          <button class="btn btn-danger" onclick="confirmDelete('insurance','${id}','modal-insurance')">🗑 Delete</button>
-          <button class="btn btn-default" onclick="editRecord('insurance','${id}')">✏️ Edit</button>
-        </div>`;
-      openModal('modal-insurance');
-    }
-    window.showInsuranceModal = showInsuranceModal;
-
     // ══ ADD / EDIT ══
     function openAddModal(){
       S.editId=null; S.editCol=null;
       const t=S.page;
-      document.getElementById('form-title').textContent=t==='vehicles'?'Add Vehicle':t==='history'?'Add Maintenance Record':'Add Insurance Record';
-      document.getElementById('form-body').innerHTML=t==='vehicles'?vForm():t==='history'?hForm():iForm();
+      document.getElementById('form-title').textContent=t==='vehicles'?'Add Vehicle':'Add Maintenance Record';
+      document.getElementById('form-body').innerHTML=t==='vehicles'?vForm():hForm();
       openModal('modal-form');
     }
     window.openAddModal=openAddModal;
 
     function editRecord(col, id){
       S.editId=id; S.editCol=col;
-      closeModal('modal-vehicle'); closeModal('modal-history'); closeModal('modal-insurance');
-      const rec = col==='vehicles'?S.vehicles.find(x=>x.id===id):col==='history'?S.history.find(x=>x.id===id):S.insurance.find(x=>x.id===id);
-      document.getElementById('form-title').textContent=col==='vehicles'?'Edit Vehicle':col==='history'?'Edit Maintenance Record':'Edit Insurance Record';
-      document.getElementById('form-body').innerHTML=col==='vehicles'?vForm(rec):col==='history'?hForm(rec):iForm(rec);
+      closeModal('modal-vehicle'); closeModal('modal-history');
+      const rec = col==='vehicles'?S.vehicles.find(x=>x.id===id):S.history.find(x=>x.id===id);
+      document.getElementById('form-title').textContent=col==='vehicles'?'Edit Vehicle':'Edit Maintenance Record';
+      document.getElementById('form-body').innerHTML=col==='vehicles'?vForm(rec):hForm(rec);
       openModal('modal-form');
     }
     window.editRecord=editRecord;
@@ -947,59 +669,23 @@ const firebaseConfig = {
 
     function vForm(v={}){return `<div class="form-grid" id="vform">${fi('plate_no','Plate No',v)}${fi('vehicle_name','Vehicle Name',v)}${fi('department','Department',v)}${fi('engine_no','Engine No',v)}${fi('chassis_no','Chassis No',v)}${fi('mv_file_no','MV File No',v)}${fi('conduction_no','Conduction No',v)}${fi('year_model','Year Model',v)}${fs('fuel','Fuel',['DIESEL','GAS','ELECTRIC','HYBRID'],v)}${fi('make','Make/Brand',v)}${fi('series','Series',v)}${fs('denomination','Denomination',['UTILITY VEHICLE','TRUCK','MOTORCYCLE WITH SIDE CAR','MOTORCYCLE'],v)}${fi('body_type','Body Type',v)}${fi('gross_wt','Gross Weight kg',v)}${fi('net_wt','Net Weight kg',v)}${fs('gsis_insurance_month','GSIS Month',['January','February','March','April','May','June','July','August','September','October','November','December'],v)}${fi('gsis_remarks','GSIS Status',v)}${fi('or_no','O.R No',v)}${fi('or_date','O.R Date',v)}${fi('or_amt','O.R Amount',v)}${fi('acquisition_date','Acquisition Date',v)}${fi('acquisition_cost','Acquisition Cost',v)}${fi('owner_name','Owner Name',v)}${fi('contact','Contact',v)}${fta('address','Address',v)}<div class="form-actions form-full"><button class="btn btn-default" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('vehicles')">💾 Save Vehicle</button></div></div>`;}
     function hForm(h={}){return `<div id="hform"><div class="form-grid">${fi('engine_no','Engine No',h)}${fi('maintenance_date','Date',h,'date')}</div>${fta('maintenance_conducted','Maintenance Conducted',h)}${fta('parts','Parts (Name|Qty|Unit|Price; per item)',h)}<div class="form-group" style="margin-top:14px"><label class="form-label">Total Amount</label><input class="form-input" type="number" step="0.01" name="amount" value="${h.amount||''}"></div><div class="form-actions"><button class="btn btn-default" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('history')">💾 Save</button></div></div>`;}
-    function iForm(i={}) {
-      // Pre-populate the two date pickers: prefer new split fields, fall back to parsing legacy insurance_date
-      let fromVal = i.insurance_date_from || '';
-      let toVal   = i.insurance_date_to   || '';
-      if ((!fromVal || !toVal) && i.insurance_date) {
-        const leg = splitLegacyInsDate(i.insurance_date);
-        if (!fromVal) fromVal = leg.from;
-        if (!toVal)   toVal   = leg.to;
-      }
-      return `<div class="form-grid" id="iform">
-        ${fi('vehicle_name','Vehicle Name',i)}
-        ${fi('plate_number','Plate Number',i)}
-        ${fi('department','Department',i)}
-        ${fi('mv_file_no','MV File No',i)}
-        ${fi('insurance_month','Insurance Month',i)}
-        <div class="form-group form-full">
-          <label class="form-label">Insurance Date (From → To / Expiry)</label>
-          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;">
-            <input class="form-input" type="date" name="insurance_date_from" value="${ea(fromVal)}" placeholder="Start date">
-            <span style="color:var(--text2);font-size:18px;text-align:center;font-weight:300;">→</span>
-            <input class="form-input" type="date" name="insurance_date_to" value="${ea(toVal)}" placeholder="Expiry date">
-          </div>
-        </div>
-        ${fi('registration_month','Reg Month',i)}
-        ${fi('registration_date','Reg Date',i,'date')}
-        ${fta('remarks','Remarks',i)}
-        <div class="form-actions form-full">
-          <button class="btn btn-default" onclick="closeModal('modal-form')">Cancel</button>
-          <button class="btn btn-primary" onclick="saveRecord('insurance')">💾 Save</button>
-        </div>
-      </div>`;
-    }
 
     async function saveRecord(col){
       if(!isOnline){ toast('You are offline. Cannot save changes.','error'); return; }
-      const containerId = col==='vehicles'?'vform':col==='history'?'hform':'iform';
+      const containerId = col==='vehicles'?'vform':'hform';
       const data={};
       document.querySelectorAll(`#${containerId} [name]`).forEach(el=>data[el.name]=el.value);
-      // Remove empty strings → null
       Object.keys(data).forEach(k=>{if(data[k]==='')data[k]=null;});
       try {
         if(S.editId) {
           await updateRec(col, S.editId, data);
-          // Update local state
           if(col==='vehicles'){const i=S.vehicles.findIndex(x=>x.id===S.editId);if(i>=0)S.vehicles[i]={...S.vehicles[i],...data};}
-          else if(col==='history'){const i=S.history.findIndex(x=>x.id===S.editId);if(i>=0)S.history[i]={...S.history[i],...data};}
-          else{const i=S.insurance.findIndex(x=>x.id===S.editId);if(i>=0)S.insurance[i]={...S.insurance[i],...data};}
+          else{const i=S.history.findIndex(x=>x.id===S.editId);if(i>=0)S.history[i]={...S.history[i],...data};}
           toast('Updated successfully!','success');
         } else {
           const ref=await addRec(col, data);
           if(col==='vehicles') S.vehicles.push({id:ref.id,...data});
-          else if(col==='history') S.history.push({id:ref.id,...data});
-          else S.insurance.push({id:ref.id,...data});
+          else S.history.push({id:ref.id,...data});
           toast('Added successfully!','success');
         }
         closeModal('modal-form');
@@ -1014,8 +700,7 @@ const firebaseConfig = {
       try {
         await deleteRec(col, id);
         if(col==='vehicles') S.vehicles=S.vehicles.filter(x=>x.id!==id);
-        else if(col==='history') S.history=S.history.filter(x=>x.id!==id);
-        else S.insurance=S.insurance.filter(x=>x.id!==id);
+        else S.history=S.history.filter(x=>x.id!==id);
         toast('Deleted!','success');
         closeModal(modalId);
         refreshCurrent();

@@ -1,5 +1,5 @@
 // VMS Service Worker — caches the app shell for offline loading
-const CACHE = 'vms-v8';  // ← bump this number every time you upload a new index.html
+const CACHE = 'vms-v10';  // ← bump this number every time you upload a new index.html
 const ASSETS = [
   './',
   './index.html',
