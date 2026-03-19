@@ -1,5 +1,5 @@
 // VMS Service Worker — network-first so updates show automatically
-const CACHE = 'vms-v20';  // ← bump this number every time you upload a new index.html
+const CACHE = 'vms-v21';  // ← bump this number every time you upload a new index.html
 const ASSETS = [
   './',
   './index.html',
