@@ -879,7 +879,7 @@ const firebaseConfig = {
     });
 
     // ── Online / Offline detection ──
-    let isOnline = true; // default ONLINE — only go offline on actual network loss
+    let isOnline = true; // always start as online
     function setOnlineState(online) {
       isOnline = online;
       const banner = document.getElementById('offline-banner');
@@ -895,20 +895,11 @@ const firebaseConfig = {
         if (addBtn) addBtn.style.display = 'none';
       }
     }
+    // Only show offline banner when browser fires a real network-loss event.
+    // Do NOT call setOnlineState on page load — avoids false-offline from
+    // Service Worker interception, Brave shields, or slow connectivity checks.
     window.addEventListener('online',  () => { setOnlineState(true);  toast('Back online!','success'); });
     window.addEventListener('offline', () => { setOnlineState(false); });
-    // Verify connectivity with a real network probe — avoids false-offline
-    // from Service Worker interception and Brave browser quirks
-    (function checkRealConnectivity() {
-      fetch('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js', {
-        method: 'HEAD', mode: 'no-cors', cache: 'no-store'
-      }).then(() => {
-        setOnlineState(true);
-      }).catch(() => {
-        // Only mark offline if the browser also confirms no network
-        if (!navigator.onLine) setOnlineState(false);
-      });
-    })();
 
     // ══ STATE ══
     const S = {
