@@ -8,8 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VMS Balayan">
 <meta name="description" content="Vehicle Maintenance System — Municipality of Balayan, Batangas">
-<meta name="theme-color" content="#080C14">
-<!-- Web App Icons -->
+<meta name="theme-color" content="#07090F">
 <link rel="icon" type="image/png" href="./logo.png">
 <link rel="apple-touch-icon" href="./logo.png">
 <link rel="shortcut icon" href="./logo.png">
@@ -22,395 +21,636 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════════
+   DESIGN: "SLATE + COBALT"
+   Ultra-dark slate. Electric cobalt accent.
+   Clean SVG iconography. Minimal. Precise.
+═══════════════════════════════════════════════ */
 :root {
-  --bg:    #080C14;
-  --bg2:   #0C1220;
-  --bg3:   #111827;
-  --bg4:   #172032;
-  --bg5:   #1E293B;
+  --s0:  #07090F;
+  --s1:  #0B0E19;
+  --s2:  #0F1422;
+  --s3:  #141C2E;
+  --s4:  #1C2640;
+  --s5:  #243254;
 
-  --orange:        #F97316;
-  --orange2:       #EA6A0A;
-  --orange3:       #C2550A;
-  --orange-glow:   rgba(249,115,22,.12);
-  --orange-border: rgba(249,115,22,.22);
+  --cobalt:      #4F6EF7;
+  --cobalt2:     #3B5BDB;
+  --cobalt3:     #2A46C0;
+  --cobalt-glow: rgba(79,110,247,.12);
+  --cobalt-edge: rgba(79,110,247,.28);
 
-  --teal:        #2DD4BF;
-  --teal2:       #14B8A6;
-  --teal-glow:   rgba(45,212,191,.1);
-  --teal-border: rgba(45,212,191,.2);
+  --mint:        #00E5B4;
+  --mint2:       #00C49A;
+  --mint-glow:   rgba(0,229,180,.1);
+  --mint-edge:   rgba(0,229,180,.22);
 
-  --green:        #22C55E;
-  --green2:       #16A34A;
-  --green-glow:   rgba(34,197,94,.1);
-  --green-border: rgba(34,197,94,.2);
+  --rose:        #FF5C7A;
+  --rose-glow:   rgba(255,92,122,.1);
+  --rose-edge:   rgba(255,92,122,.25);
 
-  --red:        #EF4444;
-  --red2:       #DC2626;
-  --red-glow:   rgba(239,68,68,.1);
-  --red-border: rgba(239,68,68,.2);
+  --amber:       #FFB830;
+  --amber-glow:  rgba(255,184,48,.1);
+  --amber-edge:  rgba(255,184,48,.22);
 
-  --blue:   #60A5FA;
-  --purple: #A78BFA;
+  --violet:      #9B6DFF;
+  --violet-glow: rgba(155,109,255,.1);
 
-  --text:  #F1F5F9;
-  --text2: #94A3B8;
-  --text3: #475569;
-  --text4: #2D3E55;
+  --t1: #EDF0FA;
+  --t2: #8892B0;
+  --t3: #4A556E;
+  --t4: #283048;
 
-  --border:  #1E2D45;
-  --border2: #131F30;
+  --bdr:  #1A2540;
+  --bdr2: #101828;
 
-  --sidebar-w: 256px;
-  --topbar-h:  62px;
-  --radius:    7px;
-  --radius-lg: 12px;
-  --radius-xl: 18px;
+  --r:   6px;
+  --r2:  10px;
+  --r3:  16px;
+  --sw:  260px;
+  --tbh: 60px;
   --safe-bot: env(safe-area-inset-bottom,0px);
   --safe-top: env(safe-area-inset-top,0px);
 
-  --font-ui:   'Inter', system-ui, sans-serif;
-  --font-head: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --fu: 'Manrope', system-ui, sans-serif;
+  --fm: 'Space Mono', monospace;
 
-  --shadow-sm: 0 2px 8px rgba(0,0,0,.4);
-  --shadow:    0 8px 32px rgba(0,0,0,.6);
-  --shadow-lg: 0 20px 60px rgba(0,0,0,.75);
-
-  --orange-gradient: linear-gradient(135deg, #F97316, #EA6A0A);
+  --sh1: 0 2px 10px rgba(0,0,0,.5);
+  --sh2: 0 8px 32px rgba(0,0,0,.65);
+  --sh3: 0 20px 60px rgba(0,0,0,.8);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html{font-size:15px;-webkit-text-size-adjust:100%;}
-body{background:var(--bg);color:var(--text);font-family:var(--font-ui);line-height:1.55;overflow:hidden;height:100vh;height:100dvh;}
-button{font-family:var(--font-ui);cursor:pointer;}
-input,textarea,select{font-family:var(--font-ui);}
-::-webkit-scrollbar{width:4px;height:4px;}
+body{background:var(--s0);color:var(--t1);font-family:var(--fu);line-height:1.55;overflow:hidden;height:100vh;height:100dvh;}
+button,input,textarea,select{font-family:var(--fu);}
+button{cursor:pointer;}
+::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+::-webkit-scrollbar-thumb{background:var(--s4);border-radius:3px;}
 
-/* Ambient BG */
-body::before{
+/* ── Subtle diagonal stripe BG ── */
+body::before {
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 38px,
+      rgba(79,110,247,.018) 38px,
+      rgba(79,110,247,.018) 39px
+    );
+}
+/* ── Ambient corner glows ── */
+body::after {
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 55% 40% at 0% 0%, rgba(249,115,22,.06), transparent 55%),
-    radial-gradient(ellipse 45% 35% at 100% 100%, rgba(45,212,191,.04), transparent 55%),
-    repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255,255,255,.008) 47px, rgba(255,255,255,.008) 48px),
-    repeating-linear-gradient(90deg, transparent, transparent 47px, rgba(255,255,255,.008) 47px, rgba(255,255,255,.008) 48px);
+    radial-gradient(ellipse 50% 35% at 0% 0%, rgba(79,110,247,.07), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 100% 100%, rgba(0,229,180,.05), transparent 55%);
 }
 
-/* ═══ LAYOUT ═══ */
+/* ═══ SHELL ═══ */
 #shell{position:relative;z-index:1;display:flex;height:100vh;height:100dvh;overflow:hidden;}
 
-/* ═══ SIDEBAR ═══ */
-#sidebar{
-  width:var(--sidebar-w);
-  background:rgba(10,15,26,.97);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border-right:1px solid var(--border);
+/* ═══════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════ */
+#sidebar {
+  width:var(--sw);
+  background:var(--s1);
+  border-right:1px solid var(--bdr);
   display:flex;flex-direction:column;flex-shrink:0;z-index:200;
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  transition:transform .26s cubic-bezier(.4,0,.2,1);
   position:relative;
 }
-#sidebar::after{
-  content:'';position:absolute;top:0;right:-1px;bottom:0;width:1px;
-  background:linear-gradient(180deg,var(--orange-border),transparent 50%,var(--teal-border));
+/* Cobalt shimmer on right edge */
+#sidebar::after {
+  content:'';position:absolute;top:0;right:0;bottom:0;width:1px;
+  background:linear-gradient(180deg,
+    transparent 0%,
+    var(--cobalt-edge) 25%,
+    var(--cobalt-edge) 75%,
+    transparent 100%
+  );
   pointer-events:none;
 }
 
-.sidebar-brand{padding:0;border-bottom:1px solid var(--border);flex-shrink:0;position:relative;overflow:hidden;}
-.sidebar-brand::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(249,115,22,.06),transparent 60%);pointer-events:none;}
-.brand-logo{display:flex;flex-direction:column;align-items:center;padding:22px 20px 18px;gap:12px;position:relative;}
-.brand-img{
-  width:56px;height:56px;border-radius:14px;
-  object-fit:contain;border:1.5px solid var(--orange-border);
-  background:var(--orange-glow);
-  box-shadow:0 0 24px rgba(249,115,22,.18), 0 4px 16px rgba(0,0,0,.5);
+/* Brand */
+.sb-brand {
+  padding:20px 20px 18px;
+  border-bottom:1px solid var(--bdr);
+  flex-shrink:0;
+  display:flex;align-items:center;gap:13px;
 }
-.brand-img-fallback{
-  width:56px;height:56px;border-radius:14px;
-  background:var(--orange-gradient);
+.sb-logo {
+  width:44px;height:44px;flex-shrink:0;
+  border-radius:10px;object-fit:contain;
+  background:var(--cobalt-glow);
+  border:1px solid var(--cobalt-edge);
+  box-shadow:0 0 20px var(--cobalt-glow);
+}
+.sb-logo-fb {
+  width:44px;height:44px;flex-shrink:0;
+  border-radius:10px;background:var(--cobalt);
   display:none;align-items:center;justify-content:center;
-  font-family:var(--font-head);font-size:22px;font-weight:800;color:#fff;
-  box-shadow:0 0 24px rgba(249,115,22,.3);
+  font-size:18px;font-weight:800;color:#fff;
 }
-.brand-text{text-align:center;}
-.brand-name{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--text);letter-spacing:.1px;line-height:1.3;}
-.brand-sub{font-size:9.5px;color:var(--text3);letter-spacing:.8px;margin-top:3px;text-transform:uppercase;}
+.sb-title { font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.3; }
+.sb-sub   { font-size:9px;color:var(--t3);letter-spacing:.9px;text-transform:uppercase;margin-top:3px; }
 
-.sidebar-nav{flex:1;overflow-y:auto;padding:14px 10px 10px;}
-.nav-group-label{
-  font-size:9px;font-weight:700;color:var(--text4);
-  letter-spacing:1.8px;text-transform:uppercase;
-  padding:10px 10px 6px;margin-bottom:4px;
+/* Nav */
+.sb-nav { flex:1;overflow-y:auto;padding:14px 12px 10px; }
+.sb-section {
+  font-size:8.5px;font-weight:700;color:var(--t4);
+  letter-spacing:2px;text-transform:uppercase;
+  padding:10px 10px 6px;
 }
-.nav-item{
+.nav-item {
   display:flex;align-items:center;gap:11px;
-  padding:9px 12px;font-size:13px;font-weight:500;
-  color:var(--text2);cursor:pointer;border:none;background:none;
-  width:100%;text-align:left;border-radius:8px;
-  transition:all .15s;position:relative;margin-bottom:2px;
-  border:1px solid transparent;
+  padding:10px 12px;font-size:13px;font-weight:500;
+  color:var(--t2);cursor:pointer;border:none;background:none;
+  width:100%;text-align:left;border-radius:var(--r);
+  transition:all .15s;margin-bottom:2px;
+  position:relative;
 }
-.nav-item:hover{color:var(--text);background:rgba(255,255,255,.04);border-color:var(--border);}
-.nav-item.active{
-  color:#fff;
-  background:linear-gradient(135deg,rgba(249,115,22,.18),rgba(249,115,22,.07));
-  border-color:var(--orange-border);
+.nav-item:hover { color:var(--t1);background:rgba(255,255,255,.04); }
+.nav-item.active {
+  color:var(--cobalt);
+  background:var(--cobalt-glow);
 }
-.nav-item.active .nav-icon-wrap{background:var(--orange-gradient);box-shadow:0 0 14px rgba(249,115,22,.4);color:#fff;border-color:transparent;}
-.nav-icon-wrap{
-  width:30px;height:30px;border-radius:8px;
-  background:var(--bg3);display:flex;align-items:center;
-  justify-content:center;font-size:15px;flex-shrink:0;
-  transition:all .15s;border:1px solid var(--border);
+/* Active cobalt left bar */
+.nav-item.active::before {
+  content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;border-radius:3px;
+  background:var(--cobalt);
+  box-shadow:0 0 10px rgba(79,110,247,.6);
 }
-.nav-label{flex:1;font-size:13px;}
-.nav-badge{
-  background:var(--bg4);border-radius:5px;
-  padding:2px 7px;font-size:10px;color:var(--text3);
-  font-family:var(--font-mono);border:1px solid var(--border);font-weight:600;
+.nav-svg { width:18px;height:18px;flex-shrink:0;transition:color .15s; }
+.nav-label { flex:1; }
+.nav-badge {
+  background:var(--s3);border-radius:4px;
+  padding:1px 7px;font-size:9.5px;color:var(--t3);
+  font-family:var(--fm);font-weight:700;border:1px solid var(--bdr);
 }
-.nav-item.active .nav-badge{background:var(--orange-glow);color:var(--orange);border-color:var(--orange-border);}
+.nav-item.active .nav-badge { background:var(--cobalt-glow);color:var(--cobalt);border-color:var(--cobalt-edge); }
 
-.sidebar-footer{border-top:1px solid var(--border);padding:13px 16px;font-size:10px;color:var(--text3);flex-shrink:0;display:flex;align-items:center;gap:8px;}
-.sidebar-footer-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 8px rgba(34,197,94,.5);animation:pulse 2s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+/* Footer */
+.sb-foot {
+  border-top:1px solid var(--bdr);
+  padding:13px 16px;font-size:10px;color:var(--t3);
+  flex-shrink:0;display:flex;align-items:center;gap:9px;
+}
+.sb-dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--mint);flex-shrink:0;
+  box-shadow:0 0 8px rgba(0,229,180,.5);
+  animation:pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:199;backdrop-filter:blur(4px);}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:199;backdrop-filter:blur(5px);}
 
-/* ═══ TOPBAR ═══ */
+/* ═══════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════ */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-#topbar{
-  height:var(--topbar-h);
-  background:rgba(10,15,26,.94);
+
+#topbar {
+  height:var(--tbh);
+  background:rgba(11,14,25,.95);
   backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:14px;
-  padding:0 24px;flex-shrink:0;padding-top:var(--safe-top);position:relative;
+  border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;gap:12px;
+  padding:0 22px;flex-shrink:0;
+  padding-top:var(--safe-top);
+  position:relative;
 }
-#topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),var(--teal),transparent 75%);}
-#topbar-menu-btn{display:none;background:none;border:none;color:var(--text2);font-size:22px;padding:4px;line-height:1;}
-.topbar-breadcrumb{display:flex;align-items:center;gap:8px;}
-.topbar-app-name{font-family:var(--font-head);font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
-.topbar-sep{color:var(--text3);font-size:14px;}
-.topbar-title{font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.2px;}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.topbar-time{font-family:var(--font-mono);font-size:11px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:5px 10px;}
-.topbar-refresh{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);padding:7px 14px;font-size:12.5px;display:flex;align-items:center;gap:5px;transition:all .15s;font-family:var(--font-ui);font-weight:500;}
-.topbar-refresh:hover{color:var(--orange);border-color:var(--orange-border);background:var(--orange-glow);}
+/* Cobalt underline */
+#topbar::after {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--cobalt) 0%,var(--mint) 50%,transparent 100%);
+  opacity:.5;
+}
 
-/* ═══ CONTENT ═══ */
+#topbar-menu-btn {
+  display:none;background:none;border:none;
+  color:var(--t2);padding:5px;line-height:0;
+  border-radius:var(--r);transition:color .15s;
+}
+#topbar-menu-btn:hover{color:var(--t1);}
+.tb-icon{width:20px;height:20px;}
+
+.tb-divider{width:1px;height:20px;background:var(--bdr);flex-shrink:0;}
+.tb-title{font-size:17px;font-weight:700;color:var(--t1);letter-spacing:-.2px;}
+.tb-app{font-size:10.5px;font-weight:600;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;}
+.tb-sep{color:var(--t4);font-size:13px;}
+
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:9px;}
+.tb-time{font-family:var(--fm);font-size:11px;color:var(--t3);background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:5px 10px;letter-spacing:.3px;}
+.tb-refresh{
+  background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);
+  color:var(--t2);padding:6px 12px;font-size:12px;font-weight:500;
+  display:flex;align-items:center;gap:6px;transition:all .15s;
+}
+.tb-refresh .tb-icon{width:16px;height:16px;}
+.tb-refresh:hover{color:var(--cobalt);border-color:var(--cobalt-edge);background:var(--cobalt-glow);}
+
+/* ═══════════════════════════════════════
+   OFFLINE BANNER
+═══════════════════════════════════════ */
+#offline-banner{
+  display:none;background:rgba(255,184,48,.1);color:var(--amber);
+  text-align:center;padding:7px 16px;font-size:12px;font-weight:600;
+  flex-shrink:0;border-bottom:1px solid var(--amber-edge);letter-spacing:.2px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+#offline-banner.show{display:flex;}
+#offline-banner .tb-icon{width:16px;height:16px;flex-shrink:0;}
+
+/* ═══════════════════════════════════════
+   CONTENT + PAGES
+═══════════════════════════════════════ */
 #content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
-.page{display:none;padding:26px 28px;animation:pageFade .22s cubic-bezier(.4,0,.2,1);}
+.page{display:none;padding:24px 26px;animation:pgIn .2s cubic-bezier(.4,0,.2,1);}
 .page.active{display:block;}
-@keyframes pageFade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-#bottom-nav{display:none;background:rgba(10,15,26,.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:var(--safe-bot);box-shadow:0 -4px 20px rgba(0,0,0,.4);}
-.bnav-inner{display:flex;}
-.bnav-btn{flex:1;background:none;border:none;color:var(--text3);display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;font-size:9.5px;gap:3px;transition:color .15s;font-family:var(--font-ui);font-weight:600;}
-.bnav-btn.active{color:var(--orange);}
-.bnav-icon{font-size:20px;line-height:1;}
-
-/* ═══ CARDS ═══ */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .2s,box-shadow .2s;}
-.card:hover{border-color:var(--orange-border);}
-.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,rgba(249,115,22,.04),transparent);}
-.card-title{font-family:var(--font-head);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--text);}
-.card-body{padding:18px;}
-
-/* ═══ STAT CARDS ═══ */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
-.stat-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:0;display:flex;overflow:hidden;
-  transition:transform .2s,box-shadow .2s,border-color .2s;
-  animation:fadeUp .35s ease both;position:relative;
+/* ═══════════════════════════════════════
+   BOTTOM NAV (mobile)
+═══════════════════════════════════════ */
+#bottom-nav{
+  display:none;background:rgba(11,14,25,.98);
+  backdrop-filter:blur(14px);
+  border-top:1px solid var(--bdr);
+  flex-shrink:0;padding-bottom:var(--safe-bot);
+  box-shadow:0 -4px 24px rgba(0,0,0,.5);
 }
-.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.5);border-color:var(--orange-border);}
-.stat-card-stripe{width:4px;flex-shrink:0;}
-.stat-card-stripe.orange{background:var(--orange-gradient);}
-.stat-card-stripe.teal  {background:linear-gradient(180deg,var(--teal),var(--teal2));}
-.stat-card-stripe.green {background:linear-gradient(180deg,var(--green),var(--green2));}
-.stat-card-stripe.purple{background:linear-gradient(180deg,var(--purple),#7C3AED);}
-.stat-card-body{padding:17px 17px 17px 15px;flex:1;min-width:0;}
-.stat-icon{font-size:20px;margin-bottom:8px;display:block;opacity:.85;}
-.stat-num{font-family:var(--font-head);font-size:30px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;}
-.stat-label{font-size:9.5px;color:var(--text3);letter-spacing:.9px;text-transform:uppercase;margin-top:5px;font-weight:600;}
+.bnav-inner{display:flex;}
+.bnav-btn{
+  flex:1;background:none;border:none;color:var(--t3);
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 0 8px;font-size:9px;gap:4px;transition:color .15s;
+  font-family:var(--fu);font-weight:600;letter-spacing:.3px;text-transform:uppercase;
+}
+.bnav-btn.active{color:var(--cobalt);}
+.bnav-svg{width:22px;height:22px;}
 
-/* Dashboard specifics */
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+/* ═══════════════════════════════════════
+   PAGE HEADER
+═══════════════════════════════════════ */
+.page-header{margin-bottom:22px;}
+.page-title{
+  font-size:22px;font-weight:800;
+  display:flex;align-items:center;gap:10px;
+  letter-spacing:-.3px;color:var(--t1);
+}
+.page-title-svg{width:24px;height:24px;color:var(--cobalt);}
+.page-sub{font-size:11.5px;color:var(--t3);margin-top:4px;letter-spacing:.1px;}
+
+/* ═══════════════════════════════════════
+   STAT CARDS
+═══════════════════════════════════════ */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.stat-card{
+  background:var(--s2);
+  border:1px solid var(--bdr);
+  border-radius:var(--r2);
+  padding:18px 20px;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+  animation:fadeUp .35s ease both;
+  position:relative;overflow:hidden;
+}
+/* Ghost watermark number */
+.stat-card::before {
+  content:attr(data-ghost);
+  position:absolute;right:-4px;top:-8px;
+  font-size:72px;font-weight:800;
+  color:rgba(255,255,255,.025);
+  font-family:var(--fu);line-height:1;
+  pointer-events:none;letter-spacing:-4px;
+  user-select:none;
+}
+.stat-card:hover{border-color:var(--cobalt-edge);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.4);}
+.stat-card-icon{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;flex-shrink:0;
+}
+.stat-card-icon svg{width:18px;height:18px;}
+.sci-cobalt{background:var(--cobalt-glow);color:var(--cobalt);border:1px solid var(--cobalt-edge);}
+.sci-mint  {background:var(--mint-glow);  color:var(--mint);  border:1px solid var(--mint-edge);}
+.sci-rose  {background:var(--rose-glow);  color:var(--rose);  border:1px solid var(--rose-edge);}
+.sci-amber {background:var(--amber-glow); color:var(--amber); border:1px solid var(--amber-edge);}
+.sci-violet{background:var(--violet-glow);color:var(--violet);border:1px solid rgba(155,109,255,.25);}
+.stat-num{font-size:28px;font-weight:800;color:var(--t1);line-height:1;letter-spacing:-.5px;}
+.stat-label{font-size:9.5px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-top:5px;font-weight:600;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════
+   DASHBOARD GRID + CARDS
+═══════════════════════════════════════ */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .dash-full{grid-column:1/-1;}
+.card{
+  background:var(--s2);border:1px solid var(--bdr);
+  border-radius:var(--r2);overflow:hidden;
+  transition:border-color .2s;
+}
+.card:hover{border-color:var(--cobalt-edge);}
+.card-head{
+  padding:13px 18px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.card-head-title{
+  font-size:13px;font-weight:700;color:var(--t1);
+  display:flex;align-items:center;gap:8px;
+}
+.card-head-svg{width:16px;height:16px;color:var(--cobalt);}
+.card-body{padding:16px 18px;}
+
+/* Bar chart */
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .bar-row:last-child{margin-bottom:0;}
-.bar-label{font-size:11.5px;color:var(--text2);min-width:90px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
-.bar-track{flex:1;background:var(--bg4);border-radius:4px;height:7px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:4px;background:var(--orange-gradient);transition:width .75s cubic-bezier(.4,0,.2,1);}
-.bar-val{font-family:var(--font-mono);font-size:11px;color:var(--text3);min-width:28px;font-weight:600;}
-.fuel-chips{display:flex;gap:8px;flex-wrap:wrap;padding-top:4px;}
-.fuel-chip{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 18px;flex:0 0 auto;transition:border-color .15s;}
-.fuel-chip:hover{border-color:var(--orange-border);}
-.fuel-chip-num{font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--orange);}
-.fuel-chip-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-top:2px;}
-.recent-item{display:flex;align-items:flex-start;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border2);gap:12px;cursor:pointer;transition:all .1s;border-radius:6px;}
+.bar-label{font-size:11px;color:var(--t2);min-width:80px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
+.bar-track{flex:1;background:var(--s4);border-radius:3px;height:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cobalt3),var(--cobalt));transition:width .8s cubic-bezier(.4,0,.2,1);}
+.bar-val{font-family:var(--fm);font-size:10.5px;color:var(--t3);min-width:24px;text-align:right;font-weight:700;}
+
+/* Fuel chips */
+.fuel-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.fuel-chip{
+  background:var(--s3);border:1px solid var(--bdr);
+  border-radius:8px;padding:10px 16px;flex:0 0 auto;
+  transition:border-color .15s;
+}
+.fuel-chip:hover{border-color:var(--cobalt-edge);}
+.fuel-chip-num{font-size:22px;font-weight:800;color:var(--cobalt);line-height:1;}
+.fuel-chip-label{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+
+/* Recent maintenance items */
+.recent-item{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--bdr2);
+  gap:12px;cursor:pointer;transition:all .12s;border-radius:var(--r);
+}
 .recent-item:last-child{border-bottom:none;}
-.recent-item:hover{background:rgba(249,115,22,.04);margin:0 -8px;padding-left:8px;padding-right:8px;}
-.recent-work{font-size:13px;font-weight:600;color:var(--text);}
-.recent-meta{font-size:11.5px;color:var(--text3);margin-top:3px;}
-.recent-amt{font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--teal);white-space:nowrap;}
+.recent-item:hover{background:rgba(79,110,247,.04);margin:0 -8px;padding-left:8px;padding-right:8px;}
+.recent-work{font-size:12.5px;font-weight:600;color:var(--t1);}
+.recent-meta{font-size:11px;color:var(--t3);margin-top:2px;}
+.recent-amt{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--mint);white-space:nowrap;}
 
-/* ═══ BADGES ═══ */
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:5px;font-size:10.5px;font-weight:700;white-space:nowrap;letter-spacing:.2px;}
-.badge-amber{background:var(--orange-glow);color:var(--orange);border:1px solid var(--orange-border);}
-.badge-blue{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.2);}
-.badge-green{background:var(--green-glow);color:var(--green);border:1px solid var(--green-border);}
-.badge-red{background:var(--red-glow);color:var(--red);border:1px solid var(--red-border);}
-.badge-gray{background:var(--bg4);color:var(--text2);border:1px solid var(--border);}
+/* ═══════════════════════════════════════
+   BADGES
+═══════════════════════════════════════ */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;letter-spacing:.2px;}
+.badge-amber {background:var(--amber-glow); color:var(--amber); }
+.badge-blue  {background:var(--cobalt-glow);color:var(--cobalt);}
+.badge-green {background:var(--mint-glow);  color:var(--mint);  }
+.badge-red   {background:var(--rose-glow);  color:var(--rose);  }
+.badge-gray  {background:var(--s4);         color:var(--t2);    }
 
-/* ═══ BUTTONS ═══ */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--radius);padding:9px 18px;font-family:var(--font-ui);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
-.btn-primary{background:var(--orange-gradient);color:#fff;box-shadow:0 2px 14px rgba(249,115,22,.3);}
-.btn-primary:hover{box-shadow:0 4px 22px rgba(249,115,22,.45);transform:translateY(-1px);}
-.btn-default{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
-.btn-default:hover{color:var(--text);border-color:var(--orange-border);background:var(--orange-glow);}
-.btn-danger{background:var(--red-glow);color:var(--red);border:1px solid var(--red-border);}
-.btn-danger:hover{background:rgba(239,68,68,.16);}
-.btn-print{background:var(--teal-glow);color:var(--teal);border:1px solid var(--teal-border);}
-.btn-print:hover{background:rgba(45,212,191,.16);}
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:none;border-radius:var(--r);padding:9px 17px;
+  font-family:var(--fu);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.btn svg{width:15px;height:15px;flex-shrink:0;}
+.btn-primary{background:var(--cobalt);color:#fff;box-shadow:0 2px 14px rgba(79,110,247,.3);}
+.btn-primary:hover{background:var(--cobalt2);box-shadow:0 4px 22px rgba(79,110,247,.45);transform:translateY(-1px);}
+.btn-default{background:var(--s3);color:var(--t2);border:1px solid var(--bdr);}
+.btn-default:hover{color:var(--t1);border-color:var(--cobalt-edge);background:var(--cobalt-glow);}
+.btn-danger{background:var(--rose-glow);color:var(--rose);border:1px solid var(--rose-edge);}
+.btn-danger:hover{background:rgba(255,92,122,.16);}
+.btn-print{background:var(--mint-glow);color:var(--mint);border:1px solid var(--mint-edge);}
+.btn-print:hover{background:rgba(0,229,180,.16);}
 .btn-sm{padding:5px 12px;font-size:11.5px;}
+.btn-sm svg{width:13px;height:13px;}
+/* Add button in topbar */
+#topbar-add-btn{background:var(--cobalt);color:#fff;border:none;border-radius:var(--r);padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;box-shadow:0 2px 12px rgba(79,110,247,.3);}
+#topbar-add-btn svg{width:14px;height:14px;}
+#topbar-add-btn:hover{background:var(--cobalt2);transform:translateY(-1px);}
 
-/* ═══ TOOLBAR ═══ */
+/* ═══════════════════════════════════════
+   TOOLBAR + SEARCH
+═══════════════════════════════════════ */
 .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
 .search-wrap{position:relative;flex:1;min-width:200px;}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none;}
-.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px 9px 36px;color:var(--text);font-size:13.5px;outline:none;transition:border-color .15s,box-shadow .15s;}
-.search-input:focus{border-color:var(--orange-border);box-shadow:0 0 0 3px var(--orange-glow);}
-.search-input::placeholder{color:var(--text3);}
+.search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none;width:16px;height:16px;}
+.search-input{
+  width:100%;background:var(--s2);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:9px 12px 9px 35px;
+  color:var(--t1);font-size:13px;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.search-input:focus{border-color:var(--cobalt-edge);box-shadow:0 0 0 3px var(--cobalt-glow);}
+.search-input::placeholder{color:var(--t3);}
 
-/* ═══ PILLS ═══ */
-.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.pill{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:4px 12px;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text3);transition:all .15s;white-space:nowrap;letter-spacing:.2px;text-transform:uppercase;}
-.pill:hover{border-color:var(--text2);color:var(--text);}
-.pill.active{background:var(--orange-glow);border-color:var(--orange-border);color:var(--orange);}
+/* Pills */
+.pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
+.pill{
+  background:var(--s2);border:1px solid var(--bdr);
+  border-radius:20px;padding:4px 13px;font-size:11px;font-weight:600;
+  cursor:pointer;color:var(--t3);transition:all .15s;white-space:nowrap;letter-spacing:.2px;
+}
+.pill:hover{border-color:var(--t2);color:var(--t1);}
+.pill.active{background:var(--cobalt-glow);border-color:var(--cobalt-edge);color:var(--cobalt);}
 
-.page-header{margin-bottom:22px;}
-.page-title{font-family:var(--font-head);font-size:24px;font-weight:800;display:flex;align-items:center;gap:10px;letter-spacing:-.3px;color:var(--text);}
-.page-sub{font-size:12px;color:var(--text3);margin-top:4px;}
-
-/* ═══ TABLE ═══ */
-.table-wrap{overflow-x:auto;border-radius:var(--radius-lg);border:1px solid var(--border);}
-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--bg2);}
-thead{background:var(--bg3);position:sticky;top:0;z-index:1;}
-thead th{padding:11px 14px;text-align:left;font-size:9px;font-weight:700;color:var(--orange);letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--orange-border);font-family:var(--font-mono);}
-tbody tr{border-bottom:1px solid var(--border2);transition:background .1s;}
-tbody tr:nth-child(even){background:rgba(255,255,255,.012);}
+/* ═══════════════════════════════════════
+   TABLE
+═══════════════════════════════════════ */
+.table-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--bdr);}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--s1);}
+thead{background:var(--s2);position:sticky;top:0;z-index:1;}
+thead th{
+  padding:11px 14px;text-align:left;font-size:8.5px;font-weight:700;
+  color:var(--cobalt);letter-spacing:1.3px;text-transform:uppercase;
+  white-space:nowrap;border-bottom:1px solid var(--cobalt-edge);
+  font-family:var(--fm);
+}
+tbody tr{border-bottom:1px solid var(--bdr2);transition:background .1s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:rgba(249,115,22,.04);cursor:pointer;}
+tbody tr:hover{background:rgba(79,110,247,.04);cursor:pointer;}
 tbody td{padding:11px 14px;vertical-align:middle;}
-.td-name{font-weight:600;color:var(--text);}
-.td-mono{font-family:var(--font-mono);font-size:11.5px;color:var(--teal);letter-spacing:.4px;}
-.td-muted{color:var(--text2);font-size:12px;}
-.td-amount{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--green);white-space:nowrap;}
+.td-name{font-weight:600;color:var(--t1);}
+.td-mono{font-family:var(--fm);font-size:11px;color:var(--cobalt);letter-spacing:.3px;}
+.td-muted{color:var(--t2);font-size:11.5px;}
+.td-amount{font-family:var(--fm);font-size:12.5px;font-weight:700;color:var(--mint);white-space:nowrap;}
 
-/* ═══ MODAL ═══ */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:16px;}
+/* ═══════════════════════════════════════
+   MODAL
+═══════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:16px;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border);border-top:2px solid var(--orange);border-radius:var(--radius-lg);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;animation:modalIn .22s cubic-bezier(.34,1.2,.64,1);box-shadow:0 40px 80px rgba(0,0,0,.75),0 0 0 1px rgba(249,115,22,.05);}
+.modal{
+  background:var(--s2);border:1px solid var(--bdr);
+  border-left:3px solid var(--cobalt);
+  border-radius:var(--r2);width:100%;max-width:640px;
+  max-height:90vh;overflow-y:auto;
+  animation:modalIn .22s cubic-bezier(.34,1.2,.64,1);
+  box-shadow:0 40px 80px rgba(0,0,0,.8),0 0 0 1px rgba(79,110,247,.06);
+}
 @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(249,115,22,.05),transparent);}
-.modal-title{font-family:var(--font-head);font-size:19px;font-weight:800;letter-spacing:-.2px;}
-.modal-close{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);width:30px;height:30px;color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;cursor:pointer;}
-.modal-close:hover{color:var(--orange);border-color:var(--orange-border);background:var(--orange-glow);}
-.modal-body{padding:22px 24px;}
-.detail-section{margin-bottom:18px;}
-.detail-section-title{font-size:9px;font-weight:700;color:var(--orange);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--orange-border);}
-.detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border2);gap:16px;}
+.modal-header{
+  padding:18px 22px 14px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(90deg,rgba(79,110,247,.05),transparent);
+}
+.modal-title{font-size:18px;font-weight:800;letter-spacing:-.2px;}
+.modal-close{
+  background:var(--s3);border:1px solid var(--bdr);
+  border-radius:var(--r);width:30px;height:30px;color:var(--t2);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;cursor:pointer;
+}
+.modal-close svg{width:14px;height:14px;}
+.modal-close:hover{color:var(--rose);border-color:var(--rose-edge);background:var(--rose-glow);}
+.modal-body{padding:20px 22px;}
+
+/* Detail rows */
+.detail-section{margin-bottom:16px;}
+.detail-section-title{
+  font-size:8.5px;font-weight:700;color:var(--cobalt);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:8px;padding-bottom:5px;
+  border-bottom:1px solid var(--cobalt-edge);
+  display:flex;align-items:center;gap:6px;
+}
+.detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--bdr2);gap:16px;}
 .detail-row:last-child{border-bottom:none;}
-.detail-label{font-size:11.5px;color:var(--text3);flex-shrink:0;font-weight:500;}
-.detail-value{font-size:12.5px;text-align:right;word-break:break-all;color:var(--text);font-weight:500;}
-.detail-mono{font-family:var(--font-mono);font-size:12px;color:var(--teal);}
-.v-hero{text-align:center;padding:14px 0 20px;}
-.v-hero-icon{font-size:52px;margin-bottom:10px;filter:drop-shadow(0 0 12px rgba(249,115,22,.25));}
-.v-hero-name{font-family:var(--font-head);font-size:22px;font-weight:800;}
-.v-hero-badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.detail-label{font-size:11.5px;color:var(--t3);flex-shrink:0;font-weight:500;}
+.detail-value{font-size:12.5px;text-align:right;word-break:break-all;color:var(--t1);font-weight:500;}
+.detail-mono{font-family:var(--fm);font-size:11.5px;color:var(--cobalt);}
+
+/* Vehicle hero */
+.v-hero{text-align:center;padding:16px 0 20px;}
+.v-hero-icon{
+  width:70px;height:70px;border-radius:16px;
+  background:var(--cobalt-glow);border:1px solid var(--cobalt-edge);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;
+}
+.v-hero-icon svg{width:36px;height:36px;color:var(--cobalt);}
+.v-hero-name{font-size:20px;font-weight:800;}
+.v-hero-badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+
+/* Parts table */
 .parts-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
-.parts-table th{background:var(--bg3);color:var(--orange);padding:7px 10px;text-align:left;font-weight:700;font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;}
-.parts-table td{padding:8px 10px;border-bottom:1px solid var(--border2);color:var(--text);}
+.parts-table th{background:var(--s3);color:var(--cobalt);padding:7px 10px;text-align:left;font-weight:700;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}
+.parts-table td{padding:8px 10px;border-bottom:1px solid var(--bdr2);color:var(--t1);}
 .parts-table tr:last-child td{border-bottom:none;}
 
-/* ═══ FORM ═══ */
+/* ═══════════════════════════════════════
+   FORM
+═══════════════════════════════════════ */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .form-full{grid-column:1/-1;}
 .form-group{display:flex;flex-direction:column;gap:5px;}
-.form-label{font-size:9.5px;color:var(--text3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
-.form-input,.form-select,.form-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-size:13.5px;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--orange-border);box-shadow:0 0 0 3px var(--orange-glow);background:var(--bg4);}
+.form-label{font-size:9.5px;color:var(--t3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+.form-input,.form-select,.form-textarea{
+  background:var(--s3);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:9px 12px;color:var(--t1);font-size:13.5px;outline:none;
+  transition:border-color .15s,box-shadow .15s;width:100%;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--cobalt-edge);box-shadow:0 0 0 3px var(--cobalt-glow);background:var(--s4);
+}
 input[type="date"].form-input{color-scheme:dark;}
-input[type="date"].form-input::-webkit-calendar-picker-indicator{filter:invert(.7) sepia(1) saturate(3) hue-rotate(330deg);cursor:pointer;}
+input[type="date"].form-input::-webkit-calendar-picker-indicator{filter:invert(.7) sepia(1) saturate(3) hue-rotate(200deg);cursor:pointer;}
 .form-textarea{resize:vertical;min-height:80px;}
-.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23F97316'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
-.form-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--border);margin-top:20px;}
+.form-select{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234F6EF7'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;
+}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--bdr);margin-top:20px;}
 
-/* ═══ UTILITY ═══ */
-.loading{text-align:center;padding:60px 20px;color:var(--text3);font-size:13px;}
-.loading-spinner{display:inline-block;width:28px;height:28px;border:2.5px solid var(--bg3);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:12px;}
+/* ═══════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════ */
+.loading{text-align:center;padding:60px 20px;color:var(--t3);font-size:13px;}
+.loading-spinner{display:inline-block;width:28px;height:28px;border:2.5px solid var(--s4);border-top-color:var(--cobalt);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:12px;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.empty{text-align:center;padding:60px 20px;color:var(--text3);}
-.empty-icon{font-size:44px;margin-bottom:12px;opacity:.3;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.empty{text-align:center;padding:60px 20px;color:var(--t3);}
+.empty-svg{width:48px;height:48px;opacity:.25;margin:0 auto 12px;display:block;}
 .flex-between{display:flex;align-items:center;justify-content:space-between;}
 .gap-8{gap:8px;}
 
-.toast{position:fixed;bottom:26px;right:26px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:13px 20px;font-size:13px;z-index:999;opacity:0;transform:translateY(10px) scale(.97);pointer-events:none;transition:all .25s cubic-bezier(.34,1.2,.64,1);box-shadow:var(--shadow);max-width:320px;font-weight:600;}
+.toast{
+  position:fixed;bottom:26px;right:26px;background:var(--s3);
+  border:1px solid var(--bdr);border-radius:var(--r2);
+  padding:13px 18px;font-size:13px;z-index:999;opacity:0;
+  transform:translateY(10px) scale(.97);pointer-events:none;
+  transition:all .25s cubic-bezier(.34,1.2,.64,1);
+  box-shadow:var(--sh2);max-width:320px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
 .toast.show{opacity:1;transform:translateY(0) scale(1);}
-.toast.success{border-color:var(--green-border);color:var(--green);}
-.toast.error{border-color:var(--red-border);color:var(--red);}
+.toast.success{border-left:3px solid var(--mint);color:var(--mint);}
+.toast.error{border-left:3px solid var(--rose);color:var(--rose);}
 
-#offline-banner{display:none;background:rgba(249,115,22,.1);color:var(--orange);text-align:center;padding:7px 16px;font-size:12px;font-weight:600;flex-shrink:0;border-bottom:1px solid var(--orange-border);letter-spacing:.3px;}
-#offline-banner.show{display:block;}
-
-/* ═══ MOBILE CARDS ═══ */
+/* Mobile cards */
 .mobile-cards{display:none;}
-.m-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .15s;animation:fadeUp .2s ease both;box-shadow:var(--shadow-sm);}
-.m-card:hover{border-left-color:var(--orange);background:var(--bg3);transform:translateY(-1px);}
-.m-card:active{background:var(--bg4);transform:none;}
-.m-card-title{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;color:var(--text);}
-.m-card-row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text3);gap:8px;flex-wrap:wrap;}
-.m-card-amount{font-family:var(--font-mono);font-size:13.5px;font-weight:700;color:var(--teal);}
+.m-card{
+  background:var(--s2);border:1px solid var(--bdr);
+  border-left:3px solid var(--bdr);
+  border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;
+  cursor:pointer;transition:all .15s;animation:fadeUp .2s ease both;
+  box-shadow:var(--sh1);
+}
+.m-card:hover{border-left-color:var(--cobalt);background:var(--s3);transform:translateY(-1px);}
+.m-card:active{transform:none;}
+.m-card-title{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;color:var(--t1);}
+.m-card-row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--t3);gap:8px;flex-wrap:wrap;}
+.m-card-amount{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--mint);}
 
-.fab{display:none;position:fixed;right:18px;bottom:calc(60px + 14px + var(--safe-bot));width:52px;height:52px;border-radius:14px;background:var(--orange-gradient);border:none;color:#fff;font-size:24px;font-weight:700;box-shadow:0 4px 20px rgba(249,115,22,.45);align-items:center;justify-content:center;z-index:50;transition:transform .15s,box-shadow .15s;}
-.fab:active{transform:scale(.9);box-shadow:0 2px 10px rgba(249,115,22,.3);}
+/* FAB */
+.fab{
+  display:none;position:fixed;right:18px;
+  bottom:calc(60px + 14px + var(--safe-bot));
+  width:52px;height:52px;border-radius:14px;
+  background:var(--cobalt);border:none;color:#fff;
+  box-shadow:0 4px 20px rgba(79,110,247,.45);
+  align-items:center;justify-content:center;z-index:50;
+  transition:transform .15s,box-shadow .15s;
+}
+.fab svg{width:24px;height:24px;}
+.fab:active{transform:scale(.9);box-shadow:0 2px 10px rgba(79,110,247,.3);}
 
-/* ═══ RESPONSIVE ═══ */
-@media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.form-grid{grid-template-columns:1fr 1fr;}}
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media(max-width:1024px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .dash-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr 1fr;}
+}
 @media(max-width:768px){
-  :root{--topbar-h:52px;}
+  :root{--tbh:52px;}
   #sidebar{position:fixed;top:0;left:0;height:100%;transform:translateX(-100%);}
-  #sidebar.open{transform:translateX(0);box-shadow:var(--shadow-lg);}
+  #sidebar.open{transform:translateX(0);box-shadow:var(--sh3);}
   #sidebar-overlay.open{display:block;}
   #topbar-menu-btn{display:flex;}
-  #topbar-add-btn{display:none !important;}
+  #topbar-add-btn{display:none!important;}
   #bottom-nav{display:block;}
   .page{padding:14px 14px calc(10px + var(--safe-bot));}
   .stats-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .stat-card{flex-direction:row;}
   .stat-num{font-size:24px;}
-  .stat-label{font-size:9.5px;}
   .dash-grid{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
   .form-actions{flex-direction:column-reverse;}
   .form-actions .btn{width:100%;justify-content:center;}
-  .topbar-time{display:none;}
-  .topbar-refresh{display:none;}
-  .topbar-title{font-size:16px;}
-  .topbar-breadcrumb{gap:5px;}
-  .topbar-app-name{display:none;}
-  .topbar-sep{display:none;}
+  .tb-time{display:none;}
+  .tb-refresh{display:none;}
+  .tb-title{font-size:15px;}
+  .tb-app,.tb-sep,.tb-divider{display:none;}
   .modal-overlay{align-items:flex-end;padding:0;}
-  .modal{max-width:100%;border-radius:18px 18px 0 0;max-height:90dvh;}
+  .modal{max-width:100%;border-radius:16px 16px 0 0;border-left:none;border-top:3px solid var(--cobalt);max-height:90dvh;}
   .table-wrap{display:none;}
   .mobile-cards{display:block;}
   .hide-mobile{display:none!important;}
@@ -418,131 +658,199 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator{filter:invert(.
   .page-header{margin-bottom:14px;}
   .fab{display:flex;}
   .card-body{padding:12px;}
-  .card-header{padding:12px 14px;}
-  .search-input{font-size:13px;}
-  .pills{gap:5px;margin-bottom:10px;}
+  .card-head{padding:12px 14px;}
+  .pills{gap:4px;margin-bottom:10px;}
   .pill{padding:3px 10px;font-size:10.5px;}
-  .bnav-btn{font-size:9px;padding:8px 0 6px;}
-  .bnav-icon{font-size:18px;}
+  .bnav-btn{font-size:9px;padding:9px 0 7px;}
+  .bnav-svg{width:20px;height:20px;}
   .m-card{padding:12px 14px;}
-  .m-card-title{font-size:13.5px;}
 }
 @media(max-width:390px){
-  :root{--topbar-h:46px;}
-  .page{padding:10px 10px calc(8px + var(--safe-bot));}
-  .stats-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  :root{--tbh:46px;}
+  .stats-grid{gap:8px;}
   .stat-num{font-size:22px;}
-  .topbar-title{font-size:14px;}
+  .tb-title{font-size:13px;}
   .page-title{font-size:18px;}
-  .m-card{padding:10px 12px;margin-bottom:8px;}
-  .badge{font-size:10px;padding:2px 6px;}
-  .modal-title{font-size:17px;}
+  .badge{font-size:10px;padding:2px 8px;}
+  .modal-title{font-size:16px;}
   .modal-body{padding:14px 16px;}
   .form-input,.form-select,.form-textarea{font-size:13px;padding:8px 10px;}
   .btn{font-size:12.5px;padding:8px 14px;}
-  .pill{font-size:10px;padding:3px 8px;}
-  .fab{width:48px;height:48px;font-size:22px;right:14px;border-radius:12px;}
+  .pill{font-size:10px;padding:3px 9px;}
+  .fab{width:48px;height:48px;right:14px;border-radius:12px;}
   .bnav-btn{font-size:8.5px;}
-  .bnav-icon{font-size:16px;}
 }
 @media(min-width:430px) and (max-width:768px){
   .stats-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
-  .m-card{padding:14px 16px;}
 }
 </style>
 
 </head>
 <body>
-
-<!-- ══ MAIN APP ══ -->
 <div id="shell">
-  <aside id="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-logo">
-        <img class="brand-img" src="./logo.png" alt="Logo"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="brand-img-fallback">V</div>
-        <div class="brand-text">
-          <div class="brand-name">Vehicle Maintenance System</div>
-          <div class="brand-sub">Municipality of Balayan</div>
+
+<!-- ══ SIDEBAR ══ -->
+<aside id="sidebar">
+  <div class="sb-brand">
+    <img class="sb-logo" src="./logo.png" alt="Logo"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="sb-logo-fb">V</div>
+    <div>
+      <div class="sb-title">Vehicle Maintenance</div>
+      <div class="sb-sub">Municipality of Balayan</div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <button class="nav-item active" id="snav-dashboard" onclick="switchPage('dashboard')">
+      <svg class="nav-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </button>
+    <div class="sb-section">Records</div>
+    <button class="nav-item" id="snav-vehicles" onclick="switchPage('vehicles')">
+      <svg class="nav-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>
+      <span class="nav-label">Vehicles</span>
+      <span class="nav-badge" id="badge-vehicles">—</span>
+    </button>
+    <button class="nav-item" id="snav-history" onclick="switchPage('history')">
+      <svg class="nav-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>
+      <span class="nav-label">Maintenance</span>
+      <span class="nav-badge" id="badge-history">—</span>
+    </button>
+  </nav>
+  <div class="sb-foot">
+    <div class="sb-dot"></div>
+    <div>
+      <span id="sidebar-time" style="font-family:var(--fm);font-size:10px;display:block;color:var(--t2)"></span>
+      Balayan, Batangas
+    </div>
+  </div>
+</aside>
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+  <div id="offline-banner">
+    <svg class="tb-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 2l16 16"/><path d="M8.5 5.2A6 6 0 0116 10M4 7.5A6 6 0 013.5 10M6.5 10A5 5 0 0110 8.5M10 12a2 2 0 010 4 2 2 0 010-4"/></svg>
+    Offline — view only. Changes cannot be saved until you reconnect.
+  </div>
+
+  <div id="topbar">
+    <button id="topbar-menu-btn" onclick="toggleSidebar()">
+      <svg class="tb-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+    </button>
+    <div class="tb-divider"></div>
+    <span class="tb-app">VMS</span>
+    <span class="tb-sep">›</span>
+    <span class="tb-title" id="topbar-title">Dashboard</span>
+    <div class="tb-right">
+      <div class="tb-time" id="topbar-time"></div>
+      <button class="tb-refresh" onclick="refreshCurrent()">
+        <svg class="tb-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8A7 7 0 106.5 3.5L4 5"/><path d="M4 2v3h3"/></svg>
+        Refresh
+      </button>
+      <button id="topbar-add-btn" onclick="openAddModal()">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:14px;height:14px"><path d="M10 4v12M4 10h12"/></svg>
+        Add New
+      </button>
+    </div>
+  </div>
+
+  <div id="content">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div id="dashboard-inner"><div class="loading"><div class="loading-spinner"></div><br>Loading...</div></div>
+    </div>
+    <!-- VEHICLES -->
+    <div class="page" id="page-vehicles">
+      <div class="page-header">
+        <div class="page-title">
+          <svg class="page-title-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>
+          Vehicles <span style="font-size:14px;color:var(--t3);font-weight:400;" id="vehicle-count"></span>
+        </div>
+        <div class="page-sub">All registered municipal vehicles</div>
+      </div>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.5-3.5"/></svg>
+          <input class="search-input" id="v-search" placeholder="Search vehicle, plate, department…" oninput="filterVehicles()">
         </div>
       </div>
+      <div class="pills" id="dept-pills"></div>
+      <div id="v-table-area"></div>
+      <div class="mobile-cards" id="v-cards"></div>
     </div>
-    <nav class="sidebar-nav">
-      <div class="nav-group-label">Overview</div>
-      <button class="nav-item active" id="snav-dashboard" onclick="switchPage('dashboard')">
-        <span class="nav-icon-wrap">📊</span><span class="nav-label">Dashboard</span>
-      </button>
-      <div class="nav-group-label">Records</div>
-      <button class="nav-item" id="snav-vehicles" onclick="switchPage('vehicles')">
-        <span class="nav-icon-wrap">🚗</span><span class="nav-label">Vehicles</span><span class="nav-badge" id="badge-vehicles">—</span>
-      </button>
-      <button class="nav-item" id="snav-history" onclick="switchPage('history')">
-        <span class="nav-icon-wrap">🔧</span><span class="nav-label">Maintenance</span><span class="nav-badge" id="badge-history">—</span>
-      </button>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-footer-dot"></div>
-      <div><span id="sidebar-time" style="font-family:var(--font-mono);font-size:10.5px;display:block;color:var(--text2)"></span>Balayan, Batangas</div>
+    <!-- HISTORY -->
+    <div class="page" id="page-history">
+      <div class="page-header">
+        <div class="page-title">
+          <svg class="page-title-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>
+          Maintenance History <span style="font-size:14px;color:var(--t3);font-weight:400;" id="history-count"></span>
+        </div>
+        <div class="page-sub">All maintenance and repair records</div>
+      </div>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.5-3.5"/></svg>
+          <input class="search-input" id="h-search" placeholder="Search maintenance, vehicle, plate…" oninput="filterHistory()">
+        </div>
+      </div>
+      <div id="h-table-area"></div>
+      <div class="mobile-cards" id="h-cards"></div>
     </div>
-  </aside>
-  <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+  </div>
 
-  <div id="main">
-    <div id="offline-banner">📵 Offline — view only. Changes cannot be saved until you reconnect.</div>
-    <div id="topbar">
-      <button id="topbar-menu-btn" onclick="toggleSidebar()">☰</button>
-      <div class="topbar-breadcrumb">
-        <span class="topbar-app-name">Vehicle Maintenance System</span>
-        <span class="topbar-sep">›</span>
-        <span class="topbar-title" id="topbar-title">Dashboard</span>
-      </div>
-      <div class="topbar-right">
-        <div class="topbar-time" id="topbar-time"></div>
-        <button class="topbar-refresh" onclick="refreshCurrent()">↻ Refresh</button>
-        <button class="btn btn-primary btn-sm" id="topbar-add-btn" onclick="openAddModal()">＋ Add New</button>
-      </div>
-    </div>
-
-    <div id="content">
-      <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
-        <div id="dashboard-inner"><div class="loading"><div class="loading-spinner"></div><br>Loading...</div></div>
-      </div>
-      <!-- VEHICLES -->
-      <div class="page" id="page-vehicles">
-        <div class="page-header"><div class="page-title">🚗 Vehicles <span style="font-size:16px;color:var(--text2);font-family:var(--font-ui);font-weight:400;" id="vehicle-count"></span></div><div class="page-sub">All registered municipal vehicles</div></div>
-        <div class="toolbar"><div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="v-search" placeholder="Search vehicle, plate, department…" oninput="filterVehicles()"></div></div>
-        <div class="pills" id="dept-pills"></div>
-        <div id="v-table-area"></div><div class="mobile-cards" id="v-cards"></div>
-      </div>
-      <!-- HISTORY -->
-      <div class="page" id="page-history">
-        <div class="page-header"><div class="page-title">🔧 Maintenance History <span style="font-size:16px;color:var(--text2);font-family:var(--font-ui);font-weight:400;" id="history-count"></span></div><div class="page-sub">All maintenance and repair records</div></div>
-        <div class="toolbar"><div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="h-search" placeholder="Search maintenance, vehicle, plate…" oninput="filterHistory()"></div></div>
-        <div id="h-table-area"></div><div class="mobile-cards" id="h-cards"></div>
-      </div>
-    </div>
-
-    <div id="bottom-nav">
-      <div class="bnav-inner">
-        <button class="bnav-btn active" id="bnav-dashboard" onclick="switchPage('dashboard')"><span class="bnav-icon">📊</span>Dashboard</button>
-        <button class="bnav-btn" id="bnav-vehicles"  onclick="switchPage('vehicles')"><span class="bnav-icon">🚗</span>Vehicles</button>
-        <button class="bnav-btn" id="bnav-history"   onclick="switchPage('history')"><span class="bnav-icon">🔧</span>History</button>
-      </div>
+  <div id="bottom-nav">
+    <div class="bnav-inner">
+      <button class="bnav-btn active" id="bnav-dashboard" onclick="switchPage('dashboard')">
+        <svg class="bnav-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="bnav-btn" id="bnav-vehicles" onclick="switchPage('vehicles')">
+        <svg class="bnav-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>
+        Vehicles
+      </button>
+      <button class="bnav-btn" id="bnav-history" onclick="switchPage('history')">
+        <svg class="bnav-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>
+        Maintenance
+      </button>
     </div>
   </div>
 </div>
-
-
+</div>
 
 <!-- MODALS -->
-<div class="modal-overlay" id="modal-vehicle" onclick="closeOverlay(event,'modal-vehicle')"><div class="modal"><div class="modal-header"><div class="modal-title" id="vmod-title">Vehicle</div><button class="modal-close" onclick="closeModal('modal-vehicle')">✕</button></div><div class="modal-body" id="vmod-body"></div></div></div>
-<div class="modal-overlay" id="modal-history" onclick="closeOverlay(event,'modal-history')"><div class="modal"><div class="modal-header"><div class="modal-title">Maintenance Record</div><button class="modal-close" onclick="closeModal('modal-history')">✕</button></div><div class="modal-body" id="hmod-body"></div></div></div>
-<div class="modal-overlay" id="modal-form"    onclick="closeOverlay(event,'modal-form')"><div class="modal"><div class="modal-header"><div class="modal-title" id="form-title">Add Record</div><button class="modal-close" onclick="closeModal('modal-form')">✕</button></div><div class="modal-body" id="form-body"></div></div></div>
+<div class="modal-overlay" id="modal-vehicle" onclick="closeOverlay(event,'modal-vehicle')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="vmod-title">Vehicle</div>
+      <button class="modal-close" onclick="closeModal('modal-vehicle')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+    </div>
+    <div class="modal-body" id="vmod-body"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-history" onclick="closeOverlay(event,'modal-history')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Maintenance Record</div>
+      <button class="modal-close" onclick="closeModal('modal-history')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+    </div>
+    <div class="modal-body" id="hmod-body"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-form" onclick="closeOverlay(event,'modal-form')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="form-title">Add Record</div>
+      <button class="modal-close" onclick="closeModal('modal-form')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+    </div>
+    <div class="modal-body" id="form-body"></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
-<!-- FAB (mobile only) -->
-<button class="fab" id="fab-btn" onclick="openAddModal()">＋</button>
+<button class="fab" id="fab-btn" onclick="openAddModal()">
+  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:24px;height:24px"><path d="M10 4v12M4 10h12"/></svg>
+</button>
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -671,16 +979,16 @@ const firebaseConfig = {
 
       el.innerHTML=`
         <div class="stats-grid">
-          <div class="stat-card" style="animation-delay:.0s"><div class="stat-card-stripe orange"></div><div class="stat-card-body"><span class="stat-icon">🚗</span><div class="stat-num">${veh.length}</div><div class="stat-label">Total Vehicles</div></div></div>
-          <div class="stat-card" style="animation-delay:.05s"><div class="stat-card-stripe" style="background:linear-gradient(180deg,var(--teal),var(--teal2))"></div><div class="stat-card-body"><span class="stat-icon">🔧</span><div class="stat-num">${hist.length}</div><div class="stat-label">Maintenance Logs</div></div></div>
-          <div class="stat-card" style="animation-delay:.1s"><div class="stat-card-stripe" style="background:linear-gradient(180deg,var(--green),#1ab869)"></div><div class="stat-card-body"><span class="stat-icon">💰</span><div class="stat-num" style="font-size:${totalSpent>=1000000000?'14px':totalSpent>=100000000?'16px':'20px'}">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Maintenance Cost</div></div></div>
-          <div class="stat-card" style="animation-delay:.15s"><div class="stat-card-stripe" style="background:linear-gradient(180deg,var(--purple),#9333ea)"></div><div class="stat-card-body"><span class="stat-icon">⛽</span><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">${Object.entries(byFuel).map(([f,c])=>`<div><div style="font-family:var(--font-head);font-size:22px;font-weight:700;color:var(--accent);line-height:1">${c}</div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">${f}</div></div>`).join('')}</div><div class="stat-label" style="margin-top:6px">Fuel Types</div></div></div>
+          <div class="stat-card" data-ghost="${veh.length}" style="animation-delay:.0s"><div class="stat-card-stripe orange"></div><div class="stat-card-body"><div class="stat-card-icon sci-cobalt"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg></div><div class="stat-num">${veh.length}</div><div class="stat-label">Total Vehicles</div></div></div>
+          <div class="stat-card" data-ghost="${hist.length}" style="animation-delay:.05s"><div class="stat-card-stripe" style="background:linear-gradient(180deg,var(--teal),var(--teal2))"></div><div class="stat-card-body"><div class="stat-card-icon sci-mint"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg></div><div class="stat-num">${hist.length}</div><div class="stat-label">Maintenance Logs</div></div></div>
+          <div class="stat-card" data-ghost="₱" style="animation-delay:.1s"><div class="stat-card-stripe" style="background:linear-gradient(180deg,var(--green),#1ab869)"></div><div class="stat-card-body"><div class="stat-card-icon sci-amber"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="16" height="10" rx="1.5"/><circle cx="10" cy="10" r="2.5"/></svg></div><div class="stat-num" style="font-size:${totalSpent>=1000000000?'14px':totalSpent>=100000000?'16px':'20px'}">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Maintenance Cost</div></div></div>
+          <div class="stat-card" data-ghost="F" style="animation-delay:.15s"><div class="stat-card-stripe" style="background:linear-gradient(180deg,var(--purple),#9333ea)"></div><div class="stat-card-body"><div class="stat-card-icon sci-violet"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="10" height="14" rx="1.5"/><path d="M13 7h1.5a1.5 1.5 0 011.5 1.5v5a1 1 0 002 0V8l-2-2"/></svg></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">${Object.entries(byFuel).map(([f,c])=>`<div><div style="font-family:var(--font-head);font-size:22px;font-weight:700;color:var(--accent);line-height:1">${c}</div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">${f}</div></div>`).join('')}</div><div class="stat-label" style="margin-top:6px">Fuel Types</div></div></div>
         </div>
         <div class="dash-grid">
-          <div class="card"><div class="card-header"><div class="card-title">📁 By Department</div></div><div class="card-body">
+          <div class="card"><div class="card-head"><div class="card-head-title"><svg class="card-head-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="1.5"/><path d="M6 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>By Department</div></div><div class="card-body">
             ${deptArr.map(([d,c])=>`<div class="bar-row"><div class="bar-label" title="${d}">${d}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c/maxD*100)}%"></div></div><div class="bar-val">${c}</div></div>`).join('')}
           </div></div>
-          <div class="card"><div class="card-header"><div class="card-title">🕐 Recent Maintenance</div><button class="btn btn-default btn-sm" onclick="switchPage('history')">View All →</button></div><div class="card-body" style="padding:0 18px;">
+          <div class="card"><div class="card-head"><div class="card-head-title"><svg class="card-head-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 5.5V10l3 2"/></svg>Recent Maintenance</div><button class="btn btn-default btn-sm" onclick="switchPage('history')">View All →</button></div><div class="card-body" style="padding:0 18px;">
             ${recentHist.map(h=>`<div class="recent-item" onclick="showHistoryModal('${h.id}')"><div><div class="recent-work">${h.maintenance_conducted||'-'}</div><div class="recent-meta">${h.plate_no||h.engine_no||''} · ${fmtDate(h.maintenance_date)}</div></div><div class="recent-amt">${h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):'-'}</div></div>`).join('')}
           </div></div>
         </div>`;
@@ -708,10 +1016,16 @@ const firebaseConfig = {
     }
     window.filterVehicles=filterVehicles;
     function gsisClass(val){const v=(val||'').toLowerCase();if(v.includes('insured')&&!v.includes('not'))return 'badge-green';if(v.includes('pending'))return 'badge-amber';return v?'badge-red':'badge-gray';}
-    function vIcon(v){const t=(v.denomination||'').toLowerCase();if(t.includes('motorcycle'))return '🏍️';if(t.includes('truck')||t.includes('dump'))return '🚛';if(t.includes('van')||t.includes('multi'))return '🚐';return '🚗';}
+    function vIcon(v){
+  const t=(v.denomination||'').toLowerCase();
+  if(t.includes('motorcycle')) return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:middle"><path d="M2 11c0-2 1-3 3-3h10c2 0 3 1 3 3"/><circle cx="5" cy="14" r="2"/><circle cx="15" cy="14" r="2"/><path d="M7 11V7l4-2 2 2v4"/></svg>';
+  if(t.includes('truck')||t.includes('dump')) return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:middle"><rect x="1" y="7" width="13" height="8" rx="1"/><path d="M14 10h3l2 3v2h-5"/><circle cx="5" cy="15" r="1.5"/><circle cx="16" cy="15" r="1.5"/></svg>';
+  if(t.includes('van')||t.includes('multi')) return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:middle"><path d="M2 12l2-5h12l2 5"/><rect x="1" y="12" width="18" height="4" rx="1"/><circle cx="5.5" cy="16" r="1.5"/><circle cx="14.5" cy="16" r="1.5"/></svg>';
+  return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:middle"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>';
+}
     function renderVehicleTable(list){
       const el=document.getElementById('v-table-area');
-      if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🚗</div>No vehicles found</div>';return;}
+      if(!list.length){el.innerHTML='<div class="empty"><svg class="empty-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>No vehicles found</div>';return;}
       el.innerHTML=`<div class="table-wrap"><table><thead><tr><th>#</th><th>Plate No</th><th>Vehicle Name</th><th class="hide-mobile">Department</th><th class="hide-mobile">Make/Series</th><th class="hide-mobile">Year</th><th class="hide-mobile">Fuel</th><th>Status</th></tr></thead><tbody>
         ${list.map((v,i)=>`<tr onclick="showVehicleModal('${v.id}')"><td class="td-muted">${i+1}</td><td><span class="badge badge-amber td-mono">${v.plate_no||'N/A'}</span></td><td class="td-name">${vIcon(v)} ${v.vehicle_name||'-'}</td><td class="hide-mobile"><span class="badge badge-blue">${v.department||'-'}</span></td><td class="hide-mobile td-muted">${v.make||''} ${v.series||''}</td><td class="hide-mobile td-muted">${v.year_model||'-'}</td><td class="hide-mobile">${v.fuel?`<span class="badge badge-gray">${v.fuel}</span>`:'-'}</td><td><span class="badge ${gsisClass(v.gsis_remarks)}">${v.gsis_remarks||'Unknown'}</span></td></tr>`).join('')}
       </tbody></table></div>`;
@@ -728,21 +1042,21 @@ const firebaseConfig = {
       const hist=S.history.filter(h=>h.engine_no===v.engine_no);
       const totalSpent=hist.reduce((s,h)=>s+parseAmt(h.amount||'0'),0);
       document.getElementById('vmod-body').innerHTML=`
-        <div class="v-hero"><div class="v-hero-icon">${vIcon(v)}</div><div class="v-hero-name">${v.vehicle_name||'-'}</div><div class="v-hero-badges"><span class="badge badge-amber">${v.plate_no||'No Plate'}</span>${v.department?`<span class="badge badge-blue">${v.department}</span>`:''}<span class="badge ${gsisClass(v.gsis_remarks)}">${v.gsis_remarks||'Unknown'}</span></div></div>
+        <div class="v-hero"><div class="v-hero-icon">${(()=>{const t=(v.denomination||'').toLowerCase();const svgCar='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>';return svgCar;})()}</div><div class="v-hero-name">${v.vehicle_name||'-'}</div><div class="v-hero-badges"><span class="badge badge-amber">${v.plate_no||'No Plate'}</span>${v.department?`<span class="badge badge-blue">${v.department}</span>`:''}<span class="badge ${gsisClass(v.gsis_remarks)}">${v.gsis_remarks||'Unknown'}</span></div></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
-          <div class="stat-card" style="text-align:center;padding:14px;"><div class="stat-num">${hist.length}</div><div class="stat-label">Maintenance Logs</div></div>
-          <div class="stat-card" style="text-align:center;padding:14px;"><div class="stat-num" style="font-size:18px">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Cost</div></div>
+          <div class="stat-card" style="text-align:center;padding:14px;border-radius:var(--r2);"><div class="stat-num">${hist.length}</div><div class="stat-label">Maintenance Logs</div></div>
+          <div class="stat-card" style="text-align:center;padding:14px;border-radius:var(--r2);"><div class="stat-num" style="font-size:18px">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div class="stat-label">Total Cost</div></div>
         </div>
-        <div class="detail-section"><div class="detail-section-title">Registration</div>${dr('MV File No',v.mv_file_no,'mono')}${dr('Engine No',v.engine_no,'mono')}${dr('Chassis No',v.chassis_no,'mono')}${dr('Conduction No',v.conduction_no)}${dr('O.R No',v.or_no,'mono')}${dr('O.R Date',fmtDate(v.or_date))}${dr('O.R Amount',v.or_amt?'₱'+v.or_amt:null)}</div>
-        <div class="detail-section"><div class="detail-section-title">Specifications</div>${dr('Make',v.make)}${dr('Series',v.series)}${dr('Year',v.year_model)}${dr('Denomination',v.denomination)}${dr('Body Type',v.body_type)}${dr('Fuel',v.fuel)}${dr('Cylinders',v.cylinders)}${dr('Displacement',v.piston_displacement?v.piston_displacement+' cc':null)}</div>
+        <div class="detail-section"><div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><rect x="3" y="2" width="14" height="16" rx="1.5"/><path d="M7 6h6M7 9h6M7 12h4"/></svg> Registration</div>${dr('MV File No',v.mv_file_no,'mono')}${dr('Engine No',v.engine_no,'mono')}${dr('Chassis No',v.chassis_no,'mono')}${dr('Conduction No',v.conduction_no)}${dr('O.R No',v.or_no,'mono')}${dr('O.R Date',fmtDate(v.or_date))}${dr('O.R Amount',v.or_amt?'₱'+v.or_amt:null)}</div>
+        <div class="detail-section"><div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg> Specifications</div>${dr('Make',v.make)}${dr('Series',v.series)}${dr('Year',v.year_model)}${dr('Denomination',v.denomination)}${dr('Body Type',v.body_type)}${dr('Fuel',v.fuel)}${dr('Cylinders',v.cylinders)}${dr('Displacement',v.piston_displacement?v.piston_displacement+' cc':null)}</div>
         <div class="detail-section"><div class="detail-section-title">Weight (kg)</div>${dr('Gross',v.gross_wt)}${dr('Net',v.net_wt)}${dr('Shipping',v.shipping_wt)}${dr('Net Capacity',v.net_capacity)}</div>
         <div class="detail-section"><div class="detail-section-title">Owner / Insurance</div>${dr('Owner',v.owner_name)}${dr('Contact',v.contact)}${dr('GSIS Month',v.gsis_insurance_month)}${dr('Acquisition Date',fmtDate(v.acquisition_date))}${dr('Acquisition Cost',v.acquisition_cost?'₱'+v.acquisition_cost:null)}</div>
         ${v.address?`<div class="detail-section"><div class="detail-section-title">Address</div><div style="font-size:13px;color:var(--text2);line-height:1.5">${v.address}</div></div>`:''}
         ${hist.length?`<div class="detail-section"><div class="detail-section-title">Recent Maintenance</div>${hist.slice(0,4).map(h=>`<div class="recent-item"><div><div class="recent-work">${h.maintenance_conducted||'-'}</div><div class="recent-meta">${fmtDate(h.maintenance_date)}</div></div><div class="recent-amt">${h.amount?'₱'+parseAmt(h.amount).toLocaleString():'-'}</div></div>`).join('')}</div>`:''}
         <div class="form-actions" style="padding-top:12px;border-top:1px solid var(--border);margin-top:12px;">
-          <button class="btn btn-danger" onclick="confirmDelete('vehicles','${id}','modal-vehicle')">🗑 Delete</button>
-          <button class="btn btn-default" onclick="editRecord('vehicles','${id}')">✏️ Edit</button>
-          <button class="btn btn-print" onclick="printRecord('vehicle','${id}')">🖨 Print</button>
+          <button class="btn btn-danger" onclick="confirmDelete('vehicles','${id}','modal-vehicle')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 6h12M8 6V4h4v2M5 6l1 11h8l1-11"/><path d="M8 10v4M12 10v4"/></svg> Delete</button>
+          <button class="btn btn-default" onclick="editRecord('vehicles','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M13.5 3.5a2.12 2.12 0 013 3L7 16H4v-3L13.5 3.5z"/></svg> Edit</button>
+          <button class="btn btn-print" onclick="printRecord('vehicle','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M6 7V3h8v4"/><rect x="3" y="7" width="14" height="8" rx="1.5"/><path d="M6 13h8M6 15v2h8v-2"/></svg> Print</button>
         </div>`;
     }
     window.showVehicleModal=showVehicleModal;
@@ -769,7 +1083,7 @@ const firebaseConfig = {
     function getVehicleInfo(engineNo){const v=S.vehicles.find(x=>x.engine_no===engineNo);return v?{plate:v.plate_no,name:v.vehicle_name}:{};}
     function renderHistoryTable(list){
       const el=document.getElementById('h-table-area');
-      if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔧</div>No records found</div>';return;}
+      if(!list.length){el.innerHTML='<div class="empty"><svg class="empty-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>No records found</div>';return;}
       el.innerHTML=`<div class="table-wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th class="hide-mobile">Plate</th><th>Maintenance</th><th class="hide-mobile">Parts</th><th>Amount</th></tr></thead><tbody>
         ${list.map(h=>{const vi=getVehicleInfo(h.engine_no);return `<tr onclick="showHistoryModal('${h.id}')"><td class="td-muted" style="white-space:nowrap">${fmtDate(h.maintenance_date)}</td><td class="td-name">${vi.name||h.engine_no||'-'}</td><td class="hide-mobile"><span class="badge badge-amber">${vi.plate||'-'}</span></td><td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.maintenance_conducted||'-'}</td><td class="hide-mobile td-muted">${parseParts(h.parts).length||'-'} parts</td><td class="td-amount">${h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):'-'}</td></tr>`;}).join('')}
       </tbody></table></div>`;
@@ -785,9 +1099,9 @@ const firebaseConfig = {
         <div class="detail-section">${dr('Vehicle',vi.name)}${dr('Plate No',vi.plate,'mono')}${dr('Engine No',h.engine_no,'mono')}${dr('Date',fmtDate(h.maintenance_date))}${dr('Maintenance',h.maintenance_conducted)}${dr('Total Amount',h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):null)}</div>
         ${parts.length?`<div class="detail-section"><div class="detail-section-title">Parts & Materials (${parts.length})</div><table class="parts-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Price (₱)</th></tr></thead><tbody>${parts.map(p=>`<tr><td>${p.name}</td><td>${p.qty}</td><td>${p.unit}</td><td>${parseFloat(p.price||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</td></tr>`).join('')}</tbody></table></div>`:''}
         <div class="form-actions" style="padding-top:12px;border-top:1px solid var(--border);margin-top:12px;">
-          <button class="btn btn-danger" onclick="confirmDelete('history','${id}','modal-history')">🗑 Delete</button>
-          <button class="btn btn-default" onclick="editRecord('history','${id}')">✏️ Edit</button>
-          <button class="btn btn-print" onclick="printRecord('history','${id}')">🖨 Print</button>
+          <button class="btn btn-danger" onclick="confirmDelete('history','${id}','modal-history')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 6h12M8 6V4h4v2M5 6l1 11h8l1-11"/><path d="M8 10v4M12 10v4"/></svg> Delete</button>
+          <button class="btn btn-default" onclick="editRecord('history','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M13.5 3.5a2.12 2.12 0 013 3L7 16H4v-3L13.5 3.5z"/></svg> Edit</button>
+          <button class="btn btn-print" onclick="printRecord('history','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M6 7V3h8v4"/><rect x="3" y="7" width="14" height="8" rx="1.5"/><path d="M6 13h8M6 15v2h8v-2"/></svg> Print</button>
         </div>`;
       openModal('modal-history');
     }
@@ -817,8 +1131,8 @@ const firebaseConfig = {
     function fs(name,label,opts,v={}){return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" name="${name}"><option value="">—</option>${opts.map(o=>`<option ${(v[name]||'')==o?'selected':''}>${o}</option>`).join('')}</select></div>`;}
     function fta(name,label,v={}){return `<div class="form-group form-full"><label class="form-label">${label}</label><textarea class="form-textarea" name="${name}">${eh(v[name]||'')}</textarea></div>`;}
 
-    function vForm(v={}){return `<div class="form-grid" id="vform">${fi('plate_no','Plate No',v)}${fi('vehicle_name','Vehicle Name',v)}${fi('department','Department',v)}${fi('engine_no','Engine No',v)}${fi('chassis_no','Chassis No',v)}${fi('mv_file_no','MV File No',v)}${fi('conduction_no','Conduction No',v)}${fi('year_model','Year Model',v)}${fs('fuel','Fuel',['DIESEL','GAS','ELECTRIC','HYBRID'],v)}${fi('make','Make/Brand',v)}${fi('series','Series',v)}${fs('denomination','Denomination',['UTILITY VEHICLE','TRUCK','MOTORCYCLE WITH SIDE CAR','MOTORCYCLE'],v)}${fi('body_type','Body Type',v)}${fi('gross_wt','Gross Weight kg',v)}${fi('net_wt','Net Weight kg',v)}${fs('gsis_insurance_month','GSIS Month',['January','February','March','April','May','June','July','August','September','October','November','December'],v)}${fi('gsis_remarks','GSIS Status',v)}${fi('or_no','O.R No',v)}${fi('or_date','O.R Date',v)}${fi('or_amt','O.R Amount',v)}${fi('acquisition_date','Acquisition Date',v)}${fi('acquisition_cost','Acquisition Cost',v)}${fi('owner_name','Owner Name',v)}${fi('contact','Contact',v)}${fta('address','Address',v)}<div class="form-actions form-full"><button class="btn btn-default" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('vehicles')">💾 Save Vehicle</button></div></div>`;}
-    function hForm(h={}){return `<div id="hform"><div class="form-grid">${fi('engine_no','Engine No',h)}${fi('maintenance_date','Date',h,'date')}</div>${fta('maintenance_conducted','Maintenance Conducted',h)}${fta('parts','Parts (Name|Qty|Unit|Price; per item)',h)}<div class="form-group" style="margin-top:14px"><label class="form-label">Total Amount</label><input class="form-input" type="number" step="0.01" name="amount" value="${h.amount||''}"></div><div class="form-actions"><button class="btn btn-default" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('history')">💾 Save</button></div></div>`;}
+    function vForm(v={}){return `<div class="form-grid" id="vform">${fi('plate_no','Plate No',v)}${fi('vehicle_name','Vehicle Name',v)}${fi('department','Department',v)}${fi('engine_no','Engine No',v)}${fi('chassis_no','Chassis No',v)}${fi('mv_file_no','MV File No',v)}${fi('conduction_no','Conduction No',v)}${fi('year_model','Year Model',v)}${fs('fuel','Fuel',['DIESEL','GAS','ELECTRIC','HYBRID'],v)}${fi('make','Make/Brand',v)}${fi('series','Series',v)}${fs('denomination','Denomination',['UTILITY VEHICLE','TRUCK','MOTORCYCLE WITH SIDE CAR','MOTORCYCLE'],v)}${fi('body_type','Body Type',v)}${fi('gross_wt','Gross Weight kg',v)}${fi('net_wt','Net Weight kg',v)}${fs('gsis_insurance_month','GSIS Month',['January','February','March','April','May','June','July','August','September','October','November','December'],v)}${fi('gsis_remarks','GSIS Status',v)}${fi('or_no','O.R No',v)}${fi('or_date','O.R Date',v)}${fi('or_amt','O.R Amount',v)}${fi('acquisition_date','Acquisition Date',v)}${fi('acquisition_cost','Acquisition Cost',v)}${fi('owner_name','Owner Name',v)}${fi('contact','Contact',v)}${fta('address','Address',v)}<div class="form-actions form-full"><button class="btn btn-default" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('vehicles')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 17V7l3-4h9v14H4z"/><rect x="7" y="13" width="6" height="4"/><rect x="7" y="3" width="6" height="4"/></svg> Save Vehicle</button></div></div>`;}
+    function hForm(h={}){return `<div id="hform"><div class="form-grid">${fi('engine_no','Engine No',h)}${fi('maintenance_date','Date',h,'date')}</div>${fta('maintenance_conducted','Maintenance Conducted',h)}${fta('parts','Parts (Name|Qty|Unit|Price; per item)',h)}<div class="form-group" style="margin-top:14px"><label class="form-label">Total Amount</label><input class="form-input" type="number" step="0.01" name="amount" value="${h.amount||''}"></div><div class="form-actions"><button class="btn btn-default" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('history')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 17V7l3-4h9v14H4z"/><rect x="7" y="13" width="6" height="4"/><rect x="7" y="3" width="6" height="4"/></svg> Save</button></div></div>`;}
 
     async function saveRecord(col){
       if(!isOnline){ toast('You are offline. Cannot save changes.','error'); return; }
@@ -993,7 +1307,7 @@ const firebaseConfig = {
     // ══ INIT ══
     loadDashboard();
   } catch(e) {
-    document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#f85149;font-family:sans-serif;text-align:center;padding:20px;"><div><div style="font-size:48px;margin-bottom:16px">⚠️</div><div style="font-size:18px;margin-bottom:8px;">Firebase Connection Failed</div><div style="font-size:13px;color:#8b949e;">Check that your credentials in index.html are correct.<br>${e.message}</div></div></div>`;
+    document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#f85149;font-family:sans-serif;text-align:center;padding:20px;"><div><div style="margin-bottom:16px"><svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div style="font-size:18px;margin-bottom:8px;">Firebase Connection Failed</div><div style="font-size:13px;color:#8b949e;">Check that your credentials in index.html are correct.<br>${e.message}</div></div></div>`;
   }
 })();
 
