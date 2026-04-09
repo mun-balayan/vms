@@ -77,6 +77,7 @@
 
   --sw:  255px;
   --tbh: 64px;
+  --bnav-h: 64px;
   --safe-bot: env(safe-area-inset-bottom,0px);
   --safe-top: env(safe-area-inset-top,0px);
 }
@@ -119,6 +120,7 @@ body::before{
 /* Brand block */
 .sb-brand{
   padding:20px 18px 18px;
+  padding-top:calc(20px + var(--safe-top));
   border-bottom:1px solid rgba(255,255,255,.1);
   flex-shrink:0;
   display:flex;align-items:center;gap:12px;
@@ -185,12 +187,13 @@ body::before{
 ═══════════════════════════════════════ */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 #topbar{
-  height:var(--tbh);
+  height:calc(var(--tbh) + var(--safe-top));
   background:var(--white);
   border-bottom:1px solid var(--bdr2);
-  display:flex;align-items:center;gap:12px;
-  padding:0 22px;flex-shrink:0;
+  display:flex;align-items:flex-end;gap:12px;
+  padding:0 22px calc((var(--tbh) - 40px) / 2);
   padding-top:var(--safe-top);
+  flex-shrink:0;
   position:relative;
   box-shadow:var(--sh1);
 }
@@ -254,21 +257,28 @@ body::before{
 
 /* ═══ BOTTOM NAV ═══ */
 #bottom-nav{
-  display:none;background:var(--forest);
+  display:none;background:var(--white);
   flex-shrink:0;padding-bottom:var(--safe-bot);
-  border-top:none;
-  box-shadow:0 -3px 16px rgba(19,78,53,.3);
+  border-top:1px solid var(--bdr2);
+  box-shadow:0 -2px 20px rgba(19,78,53,.1);
 }
-.bnav-inner{display:flex;}
+.bnav-inner{display:flex;align-items:stretch;}
 .bnav-btn{
-  flex:1;background:none;border:none;color:rgba(255,255,255,.45);
-  display:flex;flex-direction:column;align-items:center;
-  padding:10px 0 8px;font-size:9px;gap:3px;
+  flex:1;background:none;border:none;color:var(--ink4);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:10px 4px 8px;font-size:9px;gap:4px;
   transition:color .15s;font-family:var(--fu);
   font-weight:700;text-transform:uppercase;letter-spacing:.3px;
+  position:relative;min-height:var(--bnav-h);
 }
-.bnav-btn.active{color:#fff;}
-.bnav-btn svg{width:21px;height:21px;}
+.bnav-btn svg{width:22px;height:22px;transition:transform .2s cubic-bezier(.34,1.4,.64,1);}
+.bnav-btn.active{color:var(--forest);}
+.bnav-btn.active svg{transform:scale(1.15);}
+.bnav-btn.active::before{
+  content:'';position:absolute;top:0;left:20%;right:20%;height:3px;
+  background:var(--forest);border-radius:0 0 4px 4px;
+}
+.bnav-label{font-size:9px;line-height:1;}
 
 /* ═══════════════════════════════════════
    PAGE HEADERS
@@ -444,6 +454,8 @@ tbody td:last-child{border-right:none;}
   max-height:90vh;overflow-y:auto;
   animation:modalIn .22s cubic-bezier(.34,1.2,.64,1);
   box-shadow:var(--sh4);
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
 }
 @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal-header{
@@ -473,9 +485,17 @@ tbody td:last-child{border-right:none;}
 .detail-section-title svg{width:11px;height:11px;}
 .detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--bg2);gap:16px;}
 .detail-row:last-child{border-bottom:none;}
-.detail-label{font-size:12px;color:var(--ink3);flex-shrink:0;font-weight:500;}
-.detail-value{font-size:13px;text-align:right;color:var(--ink);word-break:break-all;font-weight:600;}
+.detail-label{font-size:12px;color:var(--ink3);flex-shrink:0;font-weight:500;max-width:45%;}
+.detail-value{font-size:13px;text-align:right;color:var(--ink);word-break:break-word;font-weight:600;}
 .detail-mono{font-family:var(--fm);font-size:11.5px;color:var(--forest2);}
+
+/* Detail modal action bar — sticky bottom */
+.detail-actions{
+  position:sticky;bottom:0;background:var(--white);
+  padding:12px 22px;border-top:1px solid var(--bdr2);margin-top:16px;
+  display:flex;gap:9px;justify-content:flex-end;
+  box-shadow:0 -4px 16px rgba(19,78,53,.06);
+}
 
 /* Vehicle hero card */
 .v-hero{text-align:center;padding:14px 0 20px;}
@@ -489,11 +509,13 @@ tbody td:last-child{border-right:none;}
 .v-hero-name{font-family:var(--fu);font-size:20px;font-weight:800;color:var(--ink);}
 .v-hero-badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
 
-/* Parts table */
+/* Parts table (view modal) */
 .parts-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
 .parts-table th{background:var(--bg);color:var(--forest);padding:7px 10px;text-align:left;font-weight:700;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}
 .parts-table td{padding:8px 10px;border-bottom:1px solid var(--bdr2);color:var(--ink);}
 .parts-table tr:last-child td{border-bottom:none;}
+.parts-table-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--bdr2);margin-top:8px;}
+.parts-table-wrap .parts-table{margin-top:0;}
 
 /* ═══ FORM ═══ */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
@@ -550,19 +572,20 @@ input[type="date"].form-input{color-scheme:light;}
 .m-card{
   background:var(--white);border:1px solid var(--bdr2);
   border-left:4px solid var(--bdr);border-radius:var(--r2);
-  padding:14px 16px;margin-bottom:9px;cursor:pointer;
+  padding:16px 16px;margin-bottom:10px;cursor:pointer;
   transition:all .15s;animation:fadeUp .2s ease both;box-shadow:var(--sh1);
+  -webkit-tap-highlight-color:rgba(19,78,53,.08);
 }
-.m-card:hover{border-left-color:var(--forest);box-shadow:var(--sh2);transform:translateY(-1px);}
-.m-card-title{font-family:var(--fu);font-weight:800;font-size:14px;color:var(--forest);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;}
+.m-card:active{background:var(--forest-light);transform:scale(.99);}
+.m-card-title{font-family:var(--fu);font-weight:800;font-size:15px;color:var(--forest);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:7px;}
 .m-card-row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--ink3);gap:8px;flex-wrap:wrap;}
 .m-card-amount{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--forest2);}
 
 /* FAB */
 .fab{
   display:none;position:fixed;right:18px;
-  bottom:calc(62px + 14px + var(--safe-bot));
-  width:54px;height:54px;border-radius:14px;
+  bottom:calc(var(--bnav-h) + var(--safe-bot) + 14px);
+  width:56px;height:56px;border-radius:16px;
   background:var(--forest);border:none;color:#fff;
   box-shadow:0 4px 20px rgba(19,78,53,.45);
   align-items:center;justify-content:center;z-index:50;
@@ -570,6 +593,66 @@ input[type="date"].form-input{color-scheme:light;}
 }
 .fab svg{width:24px;height:24px;}
 .fab:active{transform:scale(.9);}
+
+/* ═══ PARTS EDITOR ═══ */
+.part-row{
+  background:var(--bg);border:1px solid var(--bdr2);
+  border-radius:var(--r2);padding:11px 13px;position:relative;
+  margin-bottom:8px;animation:fadeUp .18s ease both;
+}
+.part-row-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+.part-num{
+  font-family:var(--fm);font-size:9px;font-weight:700;color:var(--forest);
+  background:var(--forest-light);border:1px solid var(--forest-edge);
+  border-radius:20px;padding:2px 9px;flex-shrink:0;
+}
+.part-row-del{
+  margin-left:auto;background:var(--red-light);border:1px solid var(--red-edge);
+  color:var(--red2);border-radius:var(--r);padding:4px 10px;font-size:11px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0;transition:background .12s;
+}
+.part-row-del svg{width:11px;height:11px;}
+.part-row-del:active{background:rgba(184,43,28,.2);}
+.part-field-label{font-size:9px;color:var(--ink4);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
+.part-input{
+  background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:9px 11px;font-size:13px;outline:none;width:100%;font-family:var(--fu2);
+  transition:border-color .15s,box-shadow .15s;color:var(--ink);
+}
+.part-input:focus{border-color:var(--forest2);box-shadow:0 0 0 3px var(--forest-light);}
+.part-unit-sel{
+  background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:9px 4px;font-size:12px;outline:none;font-family:var(--fu2);color:var(--ink);
+  transition:border-color .15s;width:100%;
+  appearance:none;text-align:center;
+}
+.part-unit-sel:focus{border-color:var(--forest2);}
+.part-row-fields{
+  display:grid;grid-template-columns:1fr;gap:6px;
+}
+.part-row-num-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;
+}
+.parts-builder{margin-bottom:4px;}
+.parts-col-headers{display:none;}
+.parts-add-btn{
+  width:100%;background:none;border:2px dashed var(--bdr);border-radius:var(--r2);
+  padding:13px;color:var(--ink3);font-size:13px;font-weight:700;font-family:var(--fu2);
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.parts-add-btn:hover,.parts-add-btn:focus{border-color:var(--forest);color:var(--forest);background:var(--forest-light);}
+.parts-add-btn svg{width:16px;height:16px;}
+.parts-total-row{
+  background:var(--forest-light);border:1px solid var(--forest-edge);
+  border-radius:var(--r);padding:10px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:6px;margin-bottom:14px;
+}
+.parts-total-label{font-size:11px;font-weight:700;color:var(--forest);letter-spacing:.4px;text-transform:uppercase;}
+.parts-total-val{font-family:var(--fm);font-size:15px;font-weight:700;color:var(--forest);}
+
 
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:1024px){
@@ -585,21 +668,47 @@ input[type="date"].form-input{color-scheme:light;}
   #topbar-menu-btn{display:flex;}
   #topbar-add-btn{display:none!important;}
   #bottom-nav{display:block;}
-  .page{padding:14px 14px calc(12px + var(--safe-bot));}
+  /* Content must not be hidden behind the bottom nav */
+  #content{padding-bottom:0;}
+  .page{padding:14px 14px 0;padding-bottom:calc(var(--bnav-h) + var(--safe-bot) + 8px);}
   .stats-grid{grid-template-columns:1fr 1fr;gap:10px;}
   .stat-card{padding:14px 14px;gap:11px;}
-  .stat-icon-box{width:38px;height:38px;border-radius:9px;}
-  .stat-icon-box svg{width:18px;height:18px;}
-  .stat-num{font-size:24px;}
+  .stat-icon-box{width:40px;height:40px;border-radius:10px;}
+  .stat-icon-box svg{width:20px;height:20px;}
+  .stat-num{font-size:26px;}
   .stat-num.sm{font-size:15px;}
   .dash-grid{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
   .form-actions{flex-direction:column-reverse;}
-  .form-actions .btn{width:100%;justify-content:center;}
+  .form-actions .btn{width:100%;justify-content:center;padding:13px;font-size:14px;}
   .tb-time,.tb-refresh,.tb-app,.tb-sep,.tb-divider{display:none;}
   .tb-title{font-size:16px;}
-  .modal-overlay{align-items:flex-end;padding:0;}
-  .modal{max-width:100%;border-radius:20px 20px 0 0;border-top:3px solid var(--forest);max-height:90dvh;}
+  /* Mobile bottom-sheet modals */
+  .modal-overlay{
+    align-items:flex-end;padding:0;
+    background:rgba(26,31,20,.6);
+  }
+  .modal{
+    max-width:100%;
+    border-radius:20px 20px 0 0;
+    border-top:3px solid var(--forest);
+    max-height:93dvh;
+    /* Drag handle visual */
+    padding-top:4px;
+  }
+  .modal::before{
+    content:'';display:block;width:36px;height:4px;
+    background:var(--bdr);border-radius:4px;
+    margin:8px auto 0;
+  }
+  .modal-header{border-radius:18px 18px 0 0;}
+  .modal-body{padding:16px 16px;}
+  /* Detail actions stack on mobile */
+  .detail-actions{
+    flex-direction:column-reverse;padding:12px 16px;gap:8px;
+    padding-bottom:calc(12px + var(--safe-bot));
+  }
+  .detail-actions .btn{width:100%;justify-content:center;padding:13px;font-size:14px;}
   .table-wrap{display:none;}
   .mobile-cards{display:block;}
   .hide-mobile{display:none!important;}
@@ -608,20 +717,26 @@ input[type="date"].form-input{color-scheme:light;}
   .fab{display:flex;}
   .d-body{padding:12px 13px;}
   .d-head{padding:11px 13px;}
-  .pills{gap:5px;}
-  .pill{padding:4px 11px;font-size:11px;}
-  .bnav-btn{padding:9px 0 7px;font-size:9px;}
+  .pills{gap:5px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .pills::-webkit-scrollbar{display:none;}
+  .pill{padding:6px 13px;font-size:12px;flex-shrink:0;}
+  /* Toast above bottom nav on mobile */
+  .toast{bottom:calc(var(--bnav-h) + var(--safe-bot) + 12px);right:14px;left:14px;max-width:none;text-align:center;justify-content:center;}
+  /* Form inputs bigger for touch */
+  .form-input,.form-select,.form-textarea{padding:11px 12px;font-size:15px;}
+  .part-input{padding:11px;font-size:14px;}
+  .part-unit-sel{padding:11px 4px;font-size:13px;}
 }
 @media(max-width:390px){
   .stats-grid{gap:8px;}
-  .stat-num{font-size:21px;}
+  .stat-num{font-size:23px;}
   .page-title{font-size:18px;}
   .badge{font-size:10px;padding:2px 8px;}
   .modal-title{font-size:16px;}
   .modal-body{padding:14px 16px;}
-  .form-input,.form-select,.form-textarea{font-size:13px;padding:8px 10px;}
-  .btn{font-size:12.5px;padding:8px 14px;}
+  .btn{font-size:13px;padding:10px 14px;}
 }
+
 </style>
 </head>
 <body>
@@ -748,15 +863,15 @@ input[type="date"].form-input{color-scheme:light;}
     <div class="bnav-inner">
       <button class="bnav-btn active" id="bnav-dashboard" onclick="switchPage('dashboard')">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
-        Dashboard
+        <span class="bnav-label">Dashboard</span>
       </button>
       <button class="bnav-btn" id="bnav-vehicles" onclick="switchPage('vehicles')">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>
-        Vehicles
+        <span class="bnav-label">Vehicles</span>
       </button>
       <button class="bnav-btn" id="bnav-history" onclick="switchPage('history')">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>
-        Maintenance
+        <span class="bnav-label">Maintenance</span>
       </button>
     </div>
   </div>
@@ -1019,7 +1134,7 @@ const firebaseConfig = {
           ${dr('Make',v.make)}${dr('Series',v.series)}${dr('Year',v.year_model)}${dr('Body Type',v.body_type)}${dr('Fuel',v.fuel)}${dr('Denomination',v.denomination)}
         </div>
         ${hist.length?`<div class="detail-section"><div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l2.5 2.5"/></svg>Recent Maintenance</div>${hist.slice(0,4).map(h=>`<div class="recent-item"><div><div class="recent-work">${h.maintenance_conducted||'—'}</div><div class="recent-meta">${fmtDate(h.maintenance_date)}</div></div><div class="recent-amt">${h.amount?'₱'+parseAmt(h.amount).toLocaleString():''}</div></div>`).join('')}</div>`:''} 
-        <div class="form-actions" style="padding-top:12px;border-top:1px solid var(--bdr2);margin-top:8px">
+        <div class="detail-actions">
           <button class="btn btn-danger btn-sm" onclick="confirmDelete('vehicles','${id}','modal-vehicle')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4h4v2M5 6l1 11h8l1-11"/></svg>Delete</button>
           <button class="btn btn-outline btn-sm" onclick="editRecord('vehicles','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5a2.12 2.12 0 013 3L7 16H4v-3L13.5 3.5z"/></svg>Edit</button>
           <button class="btn btn-print btn-sm" onclick="printRecord('vehicle','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V3h8v4"/><rect x="3" y="7" width="14" height="8" rx="1.5"/><path d="M6 13h8M6 15v2h8v-2"/></svg>Print</button>
@@ -1079,8 +1194,8 @@ const firebaseConfig = {
           <div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>Maintenance Details</div>
           ${dr('Vehicle',vi.name)}${dr('Plate No',vi.plate,'mono')}${dr('Engine No',h.engine_no,'mono')}${dr('Date',fmtDate(h.maintenance_date))}${dr('Work Done',h.maintenance_conducted)}${dr('Total Amount',h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):null)}
         </div>
-        ${parts.length?`<div class="detail-section"><div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l2 4h4l-3 3 1 5-4-3-4 3 1-5-3-3h4z"/></svg>Parts & Materials (${parts.length})</div><table class="parts-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Price (₱)</th></tr></thead><tbody>${parts.map(p=>`<tr><td>${p.name}</td><td>${p.qty}</td><td>${p.unit}</td><td>${parseFloat(p.price||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</td></tr>`).join('')}</tbody></table></div>`:''}
-        <div class="form-actions" style="padding-top:12px;border-top:1px solid var(--bdr2);margin-top:12px">
+        ${parts.length?`<div class="detail-section"><div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l2 4h4l-3 3 1 5-4-3-4 3 1-5-3-3h4z"/></svg>Parts & Materials (${parts.length})</div><div class="parts-table-wrap"><table class="parts-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Price (₱)</th></tr></thead><tbody>${parts.map(p=>`<tr><td>${p.name}</td><td>${p.qty}</td><td>${p.unit}</td><td>${parseFloat(p.price||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+        <div class="detail-actions">
           <button class="btn btn-danger btn-sm" onclick="confirmDelete('history','${id}','modal-history')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4h4v2M5 6l1 11h8l1-11"/></svg>Delete</button>
           <button class="btn btn-outline btn-sm" onclick="editRecord('history','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5a2.12 2.12 0 013 3L7 16H4v-3L13.5 3.5z"/></svg>Edit</button>
           <button class="btn btn-print btn-sm" onclick="printRecord('history','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V3h8v4"/><rect x="3" y="7" width="14" height="8" rx="1.5"/><path d="M6 13h8M6 15v2h8v-2"/></svg>Print</button>
@@ -1108,18 +1223,155 @@ const firebaseConfig = {
     }
     window.editRecord=editRecord;
 
-    function fi(name,label,v={},type='text'){return `<div class="form-group"><label class="form-label">${label}</label><input class="form-input" type="${type}" name="${name}" value="${ea(v[name]||'')}"></div>`;}
+    function fi(name,label,v={},type='text'){const im=type==='number'?'inputmode="decimal" ':type==='date'?'':'';return `<div class="form-group"><label class="form-label">${label}</label><input class="form-input" type="${type}" ${im}name="${name}" value="${ea(v[name]||'')}"></div>`;}
     function fs(name,label,opts,v={}){return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" name="${name}"><option value="">—</option>${opts.map(o=>`<option ${(v[name]||'')==o?'selected':''}>${o}</option>`).join('')}</select></div>`;}
     function fta(name,label,v={}){return `<div class="form-group form-full"><label class="form-label">${label}</label><textarea class="form-textarea" name="${name}">${eh(v[name]||'')}</textarea></div>`;}
 
     function vForm(v={}){return `<div class="form-grid" id="vform">${fi('plate_no','Plate No',v)}${fi('vehicle_name','Vehicle Name',v)}${fi('department','Department',v)}${fi('engine_no','Engine No',v)}${fi('chassis_no','Chassis No',v)}${fi('mv_file_no','MV File No',v)}${fi('conduction_no','Conduction No',v)}${fi('year_model','Year Model',v)}${fs('fuel','Fuel',['DIESEL','GAS','ELECTRIC','HYBRID'],v)}${fi('make','Make/Brand',v)}${fi('series','Series',v)}${fs('denomination','Denomination',['UTILITY VEHICLE','TRUCK','MOTORCYCLE WITH SIDE CAR','MOTORCYCLE'],v)}${fi('body_type','Body Type',v)}${fi('gross_wt','Gross Weight kg',v)}${fi('net_wt','Net Weight kg',v)}${fs('gsis_insurance_month','GSIS Month',['January','February','March','April','May','June','July','August','September','October','November','December'],v)}${fi('gsis_remarks','GSIS Status',v)}${fi('or_no','O.R No',v)}${fi('or_date','O.R Date',v)}${fi('or_amt','O.R Amount',v)}${fi('acquisition_date','Acquisition Date',v)}${fi('acquisition_cost','Acquisition Cost',v)}${fi('owner_name','Owner Name',v)}${fi('contact','Contact',v)}${fta('address','Address',v)}<div class="form-actions form-full"><button class="btn btn-outline" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('vehicles')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 17V7l3-4h9v14H4z"/><rect x="7" y="13" width="6" height="4"/><rect x="7" y="3" width="6" height="4"/></svg>Save Vehicle</button></div></div>`;}
-    function hForm(h={}){return `<div id="hform"><div class="form-grid">${fi('engine_no','Engine No',h)}${fi('maintenance_date','Date',h,'date')}</div>${fta('maintenance_conducted','Maintenance Conducted',h)}${fta('parts','Parts (Name|Qty|Unit|Price; per item)',h)}<div class="form-group" style="margin-top:14px"><label class="form-label">Total Amount (₱)</label><input class="form-input" type="number" step="0.01" name="amount" value="${h.amount||''}"></div><div class="form-actions"><button class="btn btn-outline" onclick="closeModal('modal-form')">Cancel</button><button class="btn btn-primary" onclick="saveRecord('history')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 17V7l3-4h9v14H4z"/><rect x="7" y="13" width="6" height="4"/><rect x="7" y="3" width="6" height="4"/></svg>Save Record</button></div></div>`;}
+    function hForm(h={}){
+      const existingParts=parseParts(h.parts||'');
+      const initRows=existingParts.length?existingParts:[{name:'',qty:'',unit:'pcs',price:''}];
+      const rowsHtml=initRows.map((p,i)=>makePartRowHtml(i,p)).join('');
+      const preTotal=existingParts.length?existingParts.reduce((s,p)=>s+parseFloat(p.price||0)*parseFloat(p.qty||1),0):0;
+      const amtVal=h.amount?h.amount:(preTotal>0?preTotal.toFixed(2):'');
+      return `<div id="hform">
+        <div class="form-grid">${fi('engine_no','Engine No',h)}${fi('maintenance_date','Date',h,'date')}</div>
+        ${fta('maintenance_conducted','Maintenance Conducted',h)}
+        <div style="margin-top:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span class="form-label" style="margin:0;font-size:11px">Parts &amp; Materials</span>
+            <span style="font-size:10px;color:var(--ink4)" id="parts-count-lbl">${existingParts.length} item${existingParts.length!==1?'s':''}</span>
+          </div>
+          <div class="parts-builder" id="parts-rows">${rowsHtml}</div>
+          <button type="button" class="parts-add-btn" onclick="addPartRow()">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px"><path d="M10 4v12M4 10h12"/></svg>
+            Add Part / Material
+          </button>
+          <div class="parts-total-row" id="parts-total-row" style="${preTotal>0?'':'display:none'}">
+            <span class="parts-total-label">Parts Subtotal</span>
+            <span class="parts-total-val" id="parts-total">₱${preTotal.toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:14px">
+          <label class="form-label">Total Amount (₱) <span style="font-size:9px;color:var(--ink4);font-weight:500;letter-spacing:0;text-transform:none">override or leave as auto-sum</span></label>
+          <input class="form-input" type="number" step="0.01" inputmode="decimal" name="amount" id="h-amount" value="${amtVal}" placeholder="Auto-calculated from parts" onfocus="this.dataset.manualEdit='1'" onblur="if(!this.value)delete this.dataset.manualEdit">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-form')">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="saveRecord('history')">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 17V7l3-4h9v14H4z"/><rect x="7" y="13" width="6" height="4"/><rect x="7" y="3" width="6" height="4"/></svg>
+            Save Record
+          </button>
+        </div>
+      </div>`;
+    }
+
+    function makePartRowHtml(idx,p={}){
+      const units=['pcs','set','lot','liters','gal','meters','kg','box','roll','pair','unit'];
+      const uOpts=units.map(u=>`<option value="${u}" ${(p.unit&&p.unit===u)||(!p.unit&&u==='pcs')?'selected':''}>${u}</option>`).join('');
+      return `<div class="part-row" data-idx="${idx}">
+        <div class="part-row-header">
+          <span class="part-num">Part #${idx+1}</span>
+          <button type="button" class="part-row-del" onclick="removePartRow(this)">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 5l10 10M15 5L5 15"/></svg>Remove
+          </button>
+        </div>
+        <div class="part-row-fields">
+          <div>
+            <div class="part-field-label">Item / Part Name</div>
+            <input class="part-input part-name" type="text" placeholder="e.g. Engine oil, brake pads…" value="${ea(p.name||'')}" oninput="recalcTotal()">
+          </div>
+          <div class="part-row-num-row">
+            <div>
+              <div class="part-field-label">Qty</div>
+              <input class="part-input part-qty" type="number" inputmode="decimal" min="0" step="any" placeholder="1" value="${ea(p.qty||'')}" oninput="recalcTotal()">
+            </div>
+            <div>
+              <div class="part-field-label">Unit</div>
+              <select class="part-unit-sel part-unit">${uOpts}</select>
+            </div>
+            <div>
+              <div class="part-field-label">Unit Price (₱)</div>
+              <input class="part-input part-price" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="${ea(p.price||'')}" oninput="recalcTotal()">
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+    window.makePartRowHtml=makePartRowHtml;
+
+    window.addPartRow=function(){
+      const container=document.getElementById('parts-rows');
+      if(!container) return;
+      const idx=container.querySelectorAll('.part-row').length;
+      const div=document.createElement('div');
+      div.innerHTML=makePartRowHtml(idx);
+      container.appendChild(div.firstElementChild);
+      const nameInput=container.lastElementChild.querySelector('.part-name');
+      if(nameInput) setTimeout(()=>{nameInput.focus();nameInput.scrollIntoView({behavior:'smooth',block:'nearest'});},60);
+      renumberPartRows();
+    };
+
+    function renumberPartRows(){
+      document.querySelectorAll('#parts-rows .part-row').forEach((row,i)=>{
+        const badge=row.querySelector('.part-num');
+        if(badge) badge.textContent='Part #'+(i+1);
+      });
+    }
+
+    window.removePartRow=function(btn){
+      const row=btn.closest('.part-row');
+      if(!row) return;
+      row.style.transition='opacity .18s,transform .18s';
+      row.style.opacity='0'; row.style.transform='scale(.97)';
+      setTimeout(()=>{ row.remove(); renumberPartRows(); recalcTotal(); },180);
+    };
+
+    function recalcTotal(){
+      const container=document.getElementById('parts-rows');
+      const totalEl=document.getElementById('parts-total');
+      const totalRow=document.getElementById('parts-total-row');
+      const countLbl=document.getElementById('parts-count-lbl');
+      if(!container) return;
+      let total=0; let rowCount=0;
+      container.querySelectorAll('.part-row').forEach(row=>{
+        rowCount++;
+        const qty=parseFloat(row.querySelector('.part-qty')?.value||0)||0;
+        const price=parseFloat(row.querySelector('.part-price')?.value||0)||0;
+        total+=qty*price;
+      });
+      if(totalEl) totalEl.textContent='₱'+total.toLocaleString('en-PH',{minimumFractionDigits:2});
+      if(totalRow) totalRow.style.display=(total>0)?'':'none';
+      if(countLbl) countLbl.textContent=rowCount+' item'+(rowCount!==1?'s':'');
+      // Auto-fill amount field
+      const amtField=document.getElementById('h-amount')||document.querySelector('#hform [name="amount"]');
+      if(amtField && !amtField.dataset.manualEdit) amtField.value=total>0?total.toFixed(2):'';
+    }
+    window.recalcTotal=recalcTotal;
 
     async function saveRecord(col){
       if(!isOnline){ toast('Offline. Cannot save.','error'); return; }
-      const containerId=col==='vehicles'?'vform':'hform';
       const data={};
-      document.querySelectorAll(`#${containerId} [name]`).forEach(el=>data[el.name]=el.value);
+      if(col==='vehicles'){
+        document.querySelectorAll('#vform [name]').forEach(el=>data[el.name]=el.value);
+      } else {
+        // Collect basic fields
+        document.querySelectorAll('#hform [name]').forEach(el=>data[el.name]=el.value);
+        // Serialize parts rows to pipe format
+        const rows=document.querySelectorAll('#parts-rows .part-row');
+        const partStrings=[];
+        let totalFromParts=0;
+        rows.forEach(row=>{
+          const name=(row.querySelector('.part-name')?.value||'').trim();
+          const qty=(row.querySelector('.part-qty')?.value||'').trim();
+          const unit=(row.querySelector('.part-unit')?.value||'').trim();
+          const price=(row.querySelector('.part-price')?.value||'0').trim();
+          if(name){ partStrings.push(`${name}|${qty||1}|${unit||'pc'}|${price}`); totalFromParts+=parseFloat(qty||1)*parseFloat(price||0); }
+        });
+        data.parts=partStrings.join(';')||null;
+        // Use calculated total from parts rows
+        data.amount=totalFromParts>0?totalFromParts.toFixed(2):(data.amount||null);
+      }
       Object.keys(data).forEach(k=>{if(data[k]==='')data[k]=null;});
       try {
         if(S.editId){
