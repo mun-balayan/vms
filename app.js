@@ -1,0 +1,590 @@
+// ═══════════════════════════════════════
+// VMS — Main Application
+// Firebase Compat SDK (works on file:// and http://)
+// ═══════════════════════════════════════
+
+const firebaseConfig = {
+  apiKey:      "AIzaSyCmoO3iEpR1R4GzHK2Z21YfCVV9_VRoMJo",
+  authDomain:  "vehicle-maintenance-syst-4fb2e.firebaseapp.com",
+  projectId:   "vehicle-maintenance-syst-4fb2e",
+  appId:       "1:513108103014:web:7ade19f5a6e6bb3e7f42a7",
+};
+
+(function initApp() {
+  try {
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    // Enable offline persistence (multi-tab). Fails silently if unsupported.
+    db.enablePersistence({ synchronizeTabs: true }).catch(err => {
+      console.warn('Firestore persistence unavailable:', err.code);
+    });
+
+    // ── Online/Offline ──
+    let isOnline = true;
+    function setOnlineState(online) {
+      isOnline = online;
+      document.getElementById('offline-banner').classList.toggle('show', !online);
+      ['fab-btn','topbar-add-btn'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.style.display=online?'':'none';
+      });
+    }
+    window.addEventListener('online',  () => { setOnlineState(true);  toast('Back online!','success'); });
+    window.addEventListener('offline', () => { setOnlineState(false); });
+
+    const S = {
+      page:'dashboard', vehicles:[], depts:[],
+      vFilter:{search:'',dept:'All'},
+      history:[], hSearch:'', editId:null, editCol:null,
+    };
+
+    const COL = { vehicles: 'vehicles', history: 'vehicle_history' };
+    async function getAll(colName) {
+      const timeout = new Promise((_,rej) =>
+        setTimeout(() => rej(new Error(
+          location.protocol === 'file:'
+            ? 'App must be served over HTTP, not opened as a file. Use VS Code Live Server, python -m http.server, or similar.'
+            : 'Firestore request timed out. Check your internet connection and Firestore security rules.'
+        )), 10000)
+      );
+      const snap = await Promise.race([db.collection(COL[colName]).get(), timeout]);
+      return snap.docs.map(d=>({id:d.id,...d.data()}));
+    }
+    async function addRec(colName,data) { return await db.collection(COL[colName]).add(data); }
+    async function updateRec(colName,id,data) { return await db.collection(COL[colName]).doc(id).update(data); }
+    async function deleteRec(colName,id) { return await db.collection(COL[colName]).doc(id).delete(); }
+
+    // ── Clock ──
+    function updateTime() {
+      const now=new Date();
+      document.getElementById('topbar-time').textContent=now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      document.getElementById('sidebar-time').textContent=now.toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'});
+    }
+    setInterval(updateTime,1000); updateTime();
+
+    // ── Navigation ──
+    const PAGE_TITLES={dashboard:'Dashboard',vehicles:'Vehicles',history:'Maintenance History'};
+    function switchPage(pg) {
+      S.page=pg;
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.nav-item,.bnav-btn').forEach(b=>b.classList.remove('active'));
+      document.getElementById(`page-${pg}`).classList.add('active');
+      document.getElementById(`snav-${pg}`)?.classList.add('active');
+      document.getElementById(`bnav-${pg}`)?.classList.add('active');
+      document.getElementById('topbar-title').textContent=PAGE_TITLES[pg];
+      closeSidebar();
+      if(pg==='dashboard') loadDashboard();
+      else if(pg==='vehicles') loadVehicles();
+      else if(pg==='history') loadHistory();
+    }
+    window.switchPage=switchPage;
+    window.refreshCurrent=()=>{
+      // Clear cached data so the next load always re-fetches from Firestore
+      if(S.page==='vehicles') S.vehicles=[];
+      else if(S.page==='history') S.history=[];
+      else { S.vehicles=[]; S.history=[]; }
+      switchPage(S.page);
+    };
+    window.loadDashboard=loadDashboard;
+    window.loadVehicles=loadVehicles;
+    window.loadHistory=loadHistory;
+
+    function toggleSidebar(){
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebar-overlay').classList.toggle('open');
+    }
+    function closeSidebar(){
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('open');
+    }
+    window.toggleSidebar=toggleSidebar;
+    window.closeSidebar=closeSidebar;
+
+    // ── Dashboard ──
+    async function loadDashboard() {
+      const el=document.getElementById('dashboard-inner');
+      el.innerHTML='<div class="loading"><div class="loading-spinner"></div><br>Loading...</div>';
+      let veh, hist;
+      try {
+        [veh,hist]=await Promise.all([getAll('vehicles'),getAll('history')]);
+      } catch(e) {
+        const hint=e.message&&e.message.toLowerCase().includes('permission')?'<div style="margin-top:8px;font-size:11px;color:var(--ink4)">Tip: Check your Firestore security rules — reads may be blocked.</div>':'';
+        el.innerHTML=`<div class="empty"><svg class="empty-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M10 2l8 16H2L10 2z"/><path d="M10 8v4M10 14v.5"/></svg><div class="empty-text" style="color:var(--danger)">Failed to load data</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">${e.message}</div>${hint}<button class="btn btn-outline btn-sm" style="margin-top:14px" onclick="loadDashboard()">Retry</button></div>`;
+        return;
+      }
+      S.vehicles=veh; S.history=hist;
+      document.getElementById('badge-vehicles').textContent=veh.length;
+      document.getElementById('badge-history').textContent=hist.length;
+
+      const totalSpent=hist.reduce((s,h)=>s+parseAmt(h.amount||'0'),0);
+      const byDept={};
+      veh.forEach(v=>{const d=v.department||'N/A';byDept[d]=(byDept[d]||0)+1;});
+      const deptArr=Object.entries(byDept).sort((a,b)=>b[1]-a[1]);
+      const maxD=Math.max(...deptArr.map(x=>x[1]),1);
+      const byFuel={};
+      veh.forEach(v=>{const f=v.fuel||'N/A';byFuel[f]=(byFuel[f]||0)+1;});
+      const recentHist=[...hist].sort((a,b)=>new Date(b.maintenance_date)-new Date(a.maintenance_date)).slice(0,5);
+
+      const barRow=(label,val,max,cls='')=>`<div class="bar-row"><div class="bar-label" title="${label}">${label}</div><div class="bar-track"><div class="bar-fill ${cls}" style="width:${Math.round(val/max*100)}%"></div></div><div class="bar-val">${val}</div></div>`;
+      const totalCostStr=totalSpent>=1000000?`₱${(totalSpent/1000000).toFixed(2)}M`:`₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}`;
+
+      el.innerHTML=`
+        <div class="page-header"><div>
+          <div class="page-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>Dashboard</div>
+          <div class="page-sub">Vehicle Maintenance System — Municipality of Balayan</div>
+        </div></div>
+        <div class="stats-grid">
+          <div class="stat-card" style="animation-delay:.0s">
+            <div class="stat-icon-box sib-forest"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+            <div class="stat-info"><div class="stat-label">Total Vehicles</div><div class="stat-num">${veh.length}</div></div>
+          </div>
+          <div class="stat-card" style="animation-delay:.07s">
+            <div class="stat-icon-box sib-amber"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg></div>
+            <div class="stat-info"><div class="stat-label">Maintenance Logs</div><div class="stat-num">${hist.length}</div></div>
+          </div>
+          <div class="stat-card" style="animation-delay:.14s">
+            <div class="stat-icon-box sib-gold"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="16" height="10" rx="1.5"/><circle cx="10" cy="10" r="2.5"/></svg></div>
+            <div class="stat-info"><div class="stat-label">Total Maintenance Cost</div><div class="stat-num sm">${totalCostStr}</div></div>
+          </div>
+          <div class="stat-card" style="animation-delay:.21s">
+            <div class="stat-icon-box sib-forest"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="10" height="14" rx="1.5"/><path d="M13 7h1.5a1.5 1.5 0 011.5 1.5v5a1 1 0 002 0V8l-2-2"/></svg></div>
+            <div class="stat-info"><div class="stat-label">Fuel Types</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">${Object.entries(byFuel).map(([f,c])=>`<div><div style="font-family:var(--fu);font-size:20px;font-weight:800;color:var(--forest);line-height:1">${c}</div><div style="font-size:9.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;font-weight:600">${f}</div></div>`).join('')}</div></div>
+          </div>
+        </div>
+        <div class="dash-grid">
+          <div class="d-card">
+            <div class="d-head">
+              <div class="d-head-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="1.5"/><path d="M6 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>By Department</div>
+              <button class="btn btn-outline btn-sm" onclick="switchPage('vehicles')">View All →</button>
+            </div>
+            <div class="d-body">${deptArr.map(([d,c])=>barRow(d,c,maxD)).join('')||'<div style="color:var(--ink3);font-size:13px">No data yet</div>'}</div>
+          </div>
+          <div class="d-card">
+            <div class="d-head">
+              <div class="d-head-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l2.5 2.5"/></svg>Recent Maintenance</div>
+              <button class="btn btn-outline btn-sm" onclick="switchPage('history')">View All →</button>
+            </div>
+            <div class="d-body" style="padding-top:4px">
+              ${recentHist.map(h=>{const vi=S.vehicles.find(v=>v.engine_no===h.engine_no)||{};return `<div class="recent-item" onclick="showHistoryModal('${h.id}')"><div><div class="recent-work">${h.maintenance_conducted||'—'}</div><div class="recent-meta">${vi.plate_no||h.engine_no||''} · ${fmtDate(h.maintenance_date)}</div></div><div class="recent-amt">${h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):'—'}</div></div>`;}).join('')}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ── Vehicles ──
+    async function loadVehicles() {
+      if(!S.vehicles.length){
+        document.getElementById('v-table-area').innerHTML='<div class="loading"><div class="loading-spinner"></div><br>Loading...</div>';
+        try {
+          S.vehicles=await getAll('vehicles');
+        } catch(e) {
+          const hint=e.message&&e.message.toLowerCase().includes('permission')?'<div style="margin-top:8px;font-size:11px;color:var(--ink4)">Tip: Check your Firestore security rules — reads may be blocked.</div>':'';
+          document.getElementById('v-table-area').innerHTML=`<div class="empty"><svg class="empty-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M10 2l8 16H2L10 2z"/><path d="M10 8v4M10 14v.5"/></svg><div class="empty-text" style="color:var(--danger)">Failed to load vehicles</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">${e.message}</div>${hint}<button class="btn btn-outline btn-sm" style="margin-top:14px" onclick="loadVehicles()">Retry</button></div>`;
+          return;
+        }
+      }
+      S.depts=['All',...new Set(S.vehicles.map(v=>v.department).filter(Boolean))].sort();
+      renderDeptPills(); filterVehicles();
+    }
+    function renderDeptPills(){
+      document.getElementById('dept-pills').innerHTML=S.depts.map(d=>`<div class="pill ${d===S.vFilter.dept?'active':''}" onclick="setDept('${d}')">${d}</div>`).join('');
+    }
+    window.setDept=d=>{S.vFilter.dept=d;renderDeptPills();filterVehicles();};
+    function filterVehicles(){
+      const q=(document.getElementById('v-search').value||'').toLowerCase();
+      S.vFilter.search=q;
+      let list=S.vehicles;
+      if(S.vFilter.dept!=='All') list=list.filter(v=>v.department===S.vFilter.dept);
+      if(q) list=list.filter(v=>[v.vehicle_name,v.plate_no,v.department,v.make,v.engine_no].join(' ').toLowerCase().includes(q));
+      document.getElementById('vehicle-count').textContent=`(${list.length})`;
+      renderVehicleTable(list); renderVehicleCards(list);
+    }
+    window.filterVehicles=filterVehicles;
+
+    function gsisClass(val){const v=(val||'').toLowerCase();if(v.includes('insured')&&!v.includes('not'))return 'badge-green';if(v.includes('pending'))return 'badge-amber';return v?'badge-red':'badge-gray';}
+    function vTypeSVG(v){
+      const t=(v.denomination||'').toLowerCase();
+      if(t.includes('motorcycle')) return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 11c0-2 1-3 3-3h10c2 0 3 1 3 3"/><circle cx="5" cy="14" r="2"/><circle cx="15" cy="14" r="2"/><path d="M7 11V7l4-2 2 2v4"/></svg>';
+      if(t.includes('truck')||t.includes('dump')) return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:4px"><rect x="1" y="7" width="13" height="8" rx="1"/><path d="M14 10h3l2 3v2h-5"/><circle cx="5" cy="15" r="1.5"/><circle cx="16" cy="15" r="1.5"/></svg>';
+      return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:4px"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>';
+    }
+    function vHeroSVG(v){
+      const t=(v.denomination||'').toLowerCase();
+      if(t.includes('motorcycle')) return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11c0-2 1-3 3-3h10c2 0 3 1 3 3"/><circle cx="5" cy="14" r="2"/><circle cx="15" cy="14" r="2"/><path d="M7 11V7l4-2 2 2v4"/></svg>';
+      if(t.includes('truck')||t.includes('dump')) return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="7" width="13" height="8" rx="1"/><path d="M14 10h3l2 3v2h-5"/><circle cx="5" cy="15" r="1.5"/><circle cx="16" cy="15" r="1.5"/></svg>';
+      return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>';
+    }
+
+    function renderVehicleTable(list){
+      const el=document.getElementById('v-table-area');
+      if(!list.length){el.innerHTML=`<div class="empty"><svg class="empty-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l1.5-4.5A2 2 0 016.4 5h7.2a2 2 0 011.9 1.5L17 11"/><rect x="2" y="11" width="16" height="5" rx="1.5"/><circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg><div class="empty-text">No vehicles found</div></div>`;return;}
+      el.innerHTML=`<div class="table-wrap"><table><thead><tr><th>#</th><th>Plate No</th><th>Vehicle Name</th><th class="hide-mobile">Department</th><th class="hide-mobile">Make / Year</th><th class="hide-mobile">Fuel</th><th>GSIS Status</th></tr></thead><tbody>
+        ${list.map((v,i)=>`<tr onclick="showVehicleModal('${v.id}')">
+          <td class="td-muted">${i+1}</td>
+          <td><span class="badge badge-green td-mono">${v.plate_no||'N/A'}</span></td>
+          <td class="td-name">${vTypeSVG(v)}${v.vehicle_name||'—'}</td>
+          <td class="hide-mobile"><span class="badge badge-blue">${v.department||'—'}</span></td>
+          <td class="hide-mobile td-muted">${v.make||''} ${v.year_model||''}</td>
+          <td class="hide-mobile"><span class="badge badge-gray">${v.fuel||'—'}</span></td>
+          <td><span class="badge ${gsisClass(v.gsis_remarks)}">${v.gsis_remarks||'Unknown'}</span></td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+    }
+
+    function renderVehicleCards(list){
+      document.getElementById('v-cards').innerHTML=list.map((v,i)=>`
+        <div class="m-card" style="animation-delay:${Math.min(i,10)*0.02}s" onclick="showVehicleModal('${v.id}')">
+          <div class="flex-between gap-8"><div class="m-card-title">${vTypeSVG(v)}${v.vehicle_name||'Unknown'}</div><span class="badge badge-green">${v.plate_no||'N/A'}</span></div>
+          <div class="m-card-row" style="margin-top:6px">${v.department?`<span class="badge badge-blue">${v.department}</span>`:''}<span>${v.make||''} ${v.year_model||''}</span><span class="badge ${gsisClass(v.gsis_remarks)}">${v.gsis_remarks||'Unknown'}</span></div>
+        </div>`).join('');
+    }
+
+    async function showVehicleModal(id){
+      const v=S.vehicles.find(x=>x.id===id); if(!v) return;
+      document.getElementById('vmod-title').textContent=v.plate_no||'Vehicle';
+      document.getElementById('vmod-body').innerHTML='<div class="loading"><div class="loading-spinner"></div></div>';
+      openModal('modal-vehicle');
+      // Ensure history is loaded before computing per-vehicle stats
+      if(!S.history.length){
+        try { S.history=await getAll('history'); } catch(e) { /* non-fatal, stats will show 0 */ }
+      }
+      const hist=S.history.filter(h=>h.engine_no===v.engine_no);
+      const totalSpent=hist.reduce((s,h)=>s+parseAmt(h.amount||'0'),0);
+      document.getElementById('vmod-body').innerHTML=`
+        <div class="v-hero">
+          <div class="v-hero-icon">${vHeroSVG(v)}</div>
+          <div class="v-hero-name">${v.vehicle_name||'—'}</div>
+          <div class="v-hero-badges">
+            <span class="badge badge-green">${v.plate_no||'No Plate'}</span>
+            ${v.department?`<span class="badge badge-blue">${v.department}</span>`:''}
+            <span class="badge ${gsisClass(v.gsis_remarks)}">${v.gsis_remarks||'Unknown'}</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+          <div style="background:var(--forest-light);border:1px solid var(--forest-edge);border-radius:var(--r2);padding:14px;text-align:center">
+            <div style="font-family:var(--fu);font-size:26px;font-weight:800;color:var(--forest)">${hist.length}</div>
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;font-weight:700">Maintenance Logs</div>
+          </div>
+          <div style="background:var(--gold-light);border:1px solid var(--gold-edge);border-radius:var(--r2);padding:14px;text-align:center">
+            <div style="font-family:var(--fu);font-size:16px;font-weight:800;color:var(--gold)">₱${totalSpent.toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
+            <div style="font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;font-weight:700">Total Cost</div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="14" height="16" rx="1.5"/><path d="M7 6h6M7 9h6M7 12h4"/></svg>Registration</div>
+          ${dr('MV File No',v.mv_file_no,'mono')}${dr('Engine No',v.engine_no,'mono')}${dr('Chassis No',v.chassis_no,'mono')}${dr('O.R No',v.or_no,'mono')}${dr('O.R Date',fmtDate(v.or_date))}${dr('O.R Amount',v.or_amt?'₱'+v.or_amt:null)}
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>Specifications</div>
+          ${dr('Make',v.make)}${dr('Series',v.series)}${dr('Year',v.year_model)}${dr('Body Type',v.body_type)}${dr('Fuel',v.fuel)}${dr('Denomination',v.denomination)}
+        </div>
+        ${hist.length?`<div class="detail-section"><div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l2.5 2.5"/></svg>Recent Maintenance</div>${hist.slice(0,4).map(h=>`<div class="recent-item"><div><div class="recent-work">${h.maintenance_conducted||'—'}</div><div class="recent-meta">${fmtDate(h.maintenance_date)}</div></div><div class="recent-amt">${h.amount?'₱'+parseAmt(h.amount).toLocaleString():''}</div></div>`).join('')}</div>`:''}
+        <div class="detail-actions">
+          <button class="btn btn-danger btn-sm" onclick="confirmDelete('vehicles','${id}','modal-vehicle')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4h4v2M5 6l1 11h8l1-11"/></svg>Delete</button>
+          <button class="btn btn-outline btn-sm" onclick="editRecord('vehicles','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5a2.12 2.12 0 013 3L7 16H4v-3L13.5 3.5z"/></svg>Edit</button>
+          <button class="btn btn-print btn-sm" onclick="printRecord('vehicle','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V3h8v4"/><rect x="3" y="7" width="14" height="8" rx="1.5"/><path d="M6 13h8M6 15v2h8v-2"/></svg>Print</button>
+        </div>`;
+    }
+    window.showVehicleModal=showVehicleModal;
+
+    // ── History ──
+    async function loadHistory(){
+      document.getElementById('h-table-area').innerHTML='<div class="loading"><div class="loading-spinner"></div><br>Loading...</div>';
+      try {
+        if(!S.history.length) S.history=await getAll('history');
+        if(!S.vehicles.length) S.vehicles=await getAll('vehicles');
+      } catch(e) {
+        const hint=e.message&&e.message.toLowerCase().includes('permission')?'<div style="margin-top:8px;font-size:11px;color:var(--ink4)">Tip: Check your Firestore security rules — reads may be blocked.</div>':'';
+        document.getElementById('h-table-area').innerHTML=`<div class="empty"><svg class="empty-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M10 2l8 16H2L10 2z"/><path d="M10 8v4M10 14v.5"/></svg><div class="empty-text" style="color:var(--danger)">Failed to load history</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">${e.message}</div>${hint}<button class="btn btn-outline btn-sm" style="margin-top:14px" onclick="loadHistory()">Retry</button></div>`;
+        return;
+      }
+      filterHistory();
+    }
+    function filterHistory(){
+      const q=(document.getElementById('h-search').value||'').toLowerCase();
+      S.hSearch=q;
+      let list=S.history;
+      if(q){
+        const vMap={}; S.vehicles.forEach(v=>{vMap[v.engine_no]={plate:v.plate_no,name:v.vehicle_name};});
+        list=list.filter(h=>{
+          const vm=vMap[h.engine_no]||{};
+          const partNames=parseParts(h.parts||'').map(p=>p.name).join(' ');
+          return [h.engine_no,h.maintenance_conducted,vm.plate,vm.name,partNames].join(' ').toLowerCase().includes(q);
+        });
+      }
+      list=[...list].sort((a,b)=>new Date(b.maintenance_date)-new Date(a.maintenance_date));
+      document.getElementById('history-count').textContent=`(${list.length})`;
+      renderHistoryTable(list); renderHistoryCards(list);
+    }
+    window.filterHistory=filterHistory;
+    function getVehicleInfo(engineNo){const v=S.vehicles.find(x=>x.engine_no===engineNo);return v?{plate:v.plate_no,name:v.vehicle_name}:{};}
+
+    function renderHistoryTable(list){
+      const el=document.getElementById('h-table-area');
+      if(!list.length){el.innerHTML=`<div class="empty"><svg class="empty-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg><div class="empty-text">No records found</div></div>`;return;}
+      el.innerHTML=`<div class="table-wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th class="hide-mobile">Plate</th><th>Maintenance Work</th><th class="hide-mobile">Parts</th><th>Amount</th></tr></thead><tbody>
+        ${list.map(h=>{const vi=getVehicleInfo(h.engine_no);return `<tr onclick="showHistoryModal('${h.id}')">
+          <td class="td-muted" style="white-space:nowrap">${fmtDate(h.maintenance_date)}</td>
+          <td class="td-name">${vi.name||h.engine_no||'—'}</td>
+          <td class="hide-mobile"><span class="badge badge-green">${vi.plate||'—'}</span></td>
+          <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)">${h.maintenance_conducted||'—'}</td>
+          <td class="hide-mobile td-muted">${parseParts(h.parts).length||'—'} parts</td>
+          <td class="td-amount">${h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):'—'}</td>
+        </tr>`;}).join('')}
+      </tbody></table></div>`;
+    }
+
+    function renderHistoryCards(list){
+      document.getElementById('h-cards').innerHTML=list.map((h,i)=>{const vi=getVehicleInfo(h.engine_no);return `
+        <div class="m-card" style="animation-delay:${Math.min(i,10)*0.02}s" onclick="showHistoryModal('${h.id}')">
+          <div class="flex-between gap-8"><div class="m-card-title">${h.maintenance_conducted||'—'}</div><div class="m-card-amount">${h.amount?'₱'+parseAmt(h.amount).toLocaleString():''}</div></div>
+          <div class="m-card-row" style="margin-top:5px">${vi.plate?`<span class="badge badge-green">${vi.plate}</span>`:''}<span>${vi.name||h.engine_no||''}</span><span>${fmtDate(h.maintenance_date)}</span></div>
+        </div>`;}).join('');
+    }
+
+    async function showHistoryModal(id){
+      const h=S.history.find(x=>x.id===id); if(!h) return;
+      const vi=getVehicleInfo(h.engine_no);
+      const parts=parseParts(h.parts);
+      document.getElementById('hmod-body').innerHTML=`
+        <div class="detail-section">
+          <div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3a3.5 3.5 0 00-3.36 4.47L3.5 15.1a1.4 1.4 0 001.98 1.98l7.63-7.64A3.5 3.5 0 1014.5 3z"/></svg>Maintenance Details</div>
+          ${dr('Vehicle',vi.name)}${dr('Plate No',vi.plate,'mono')}${dr('Engine No',h.engine_no,'mono')}${dr('Date',fmtDate(h.maintenance_date))}${dr('Work Done',h.maintenance_conducted)}${dr('Total Amount',h.amount?'₱'+parseAmt(h.amount).toLocaleString('en-PH',{minimumFractionDigits:2}):null)}
+        </div>
+        ${parts.length?`<div class="detail-section"><div class="detail-section-title"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l2 4h4l-3 3 1 5-4-3-4 3 1-5-3-3h4z"/></svg>Parts & Materials (${parts.length})</div><div class="parts-table-wrap"><table class="parts-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Price (₱)</th></tr></thead><tbody>${parts.map(p=>`<tr><td>${p.name}</td><td>${p.qty}</td><td>${p.unit}</td><td>${parseFloat(p.price||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+        <div class="detail-actions">
+          <button class="btn btn-danger btn-sm" onclick="confirmDelete('history','${id}','modal-history')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4h4v2M5 6l1 11h8l1-11"/></svg>Delete</button>
+          <button class="btn btn-outline btn-sm" onclick="editRecord('history','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5a2.12 2.12 0 013 3L7 16H4v-3L13.5 3.5z"/></svg>Edit</button>
+          <button class="btn btn-print btn-sm" onclick="printRecord('history','${id}')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V3h8v4"/><rect x="3" y="7" width="14" height="8" rx="1.5"/><path d="M6 13h8M6 15v2h8v-2"/></svg>Print</button>
+        </div>`;
+      openModal('modal-history');
+    }
+    window.showHistoryModal=showHistoryModal;
+
+    // ── Add / Edit ──
+    function openAddModal(){
+      S.editId=null; S.editCol=null;
+      const t=S.page;
+      document.getElementById('form-title').textContent=t==='vehicles'?'Add Vehicle':'Add Maintenance Record';
+      document.getElementById('form-body').innerHTML=t==='vehicles'?vForm():hForm();
+      openModal('modal-form');
+    }
+    window.openAddModal=openAddModal;
+
+    function editRecord(col,id){
+      S.editId=id; S.editCol=col;
+      closeModal('modal-vehicle'); closeModal('modal-history');
+      const rec=col==='vehicles'?S.vehicles.find(x=>x.id===id):S.history.find(x=>x.id===id);
+      document.getElementById('form-title').textContent=col==='vehicles'?'Edit Vehicle':'Edit Maintenance Record';
+      document.getElementById('form-body').innerHTML=col==='vehicles'?vForm(rec):hForm(rec);
+      openModal('modal-form');
+    }
+    window.editRecord=editRecord;
+
+    function fi(name,label,v={},type='text'){const im=type==='number'?'inputmode="decimal" ':type==='date'?'':'';return `<div class="form-group"><label class="form-label">${label}</label><input class="form-input" type="${type}" ${im}name="${name}" value="${ea(v[name]||'')}"></div>`;}
+    function fs(name,label,opts,v={}){return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" name="${name}"><option value="">—</option>${opts.map(o=>`<option ${(v[name]||'')==o?'selected':''}>${o}</option>`).join('')}</select></div>`;}
+    function fta(name,label,v={}){return `<div class="form-group form-full"><label class="form-label">${label}</label><textarea class="form-textarea" name="${name}">${eh(v[name]||'')}</textarea></div>`;}
+
+    function vForm(v={}){return `<div class="form-grid" id="vform">${fi('plate_no','Plate No',v)}${fi('vehicle_name','Vehicle Name',v)}${fi('department','Department',v)}${fi('engine_no','Engine No',v)}${fi('chassis_no','Chassis No',v)}${fi('mv_file_no','MV File No',v)}${fi('conduction_no','Conduction No',v)}${fi('year_model','Year Model',v)}${fs('fuel','Fuel',['DIESEL','GAS','ELECTRIC','HYBRID'],v)}${fi('make','Make/Brand',v)}${fi('series','Series',v)}${fs('denomination','Denomination',['UTILITY VEHICLE','TRUCK','MOTORCYCLE WITH SIDE CAR','MOTORCYCLE'],v)}${fi('body_type','Body Type',v)}${fi('gross_wt','Gross Weight kg',v,'number')}${fi('net_wt','Net Weight kg',v,'number')}${fs('gsis_insurance_month','GSIS Month',['January','February','March','April','May','June','July','August','September','October','November','December'],v)}${fi('gsis_remarks','GSIS Status',v)}${fi('or_no','O.R No',v)}${fi('or_date','O.R Date',v,'date')}${fi('or_amt','O.R Amount',v,'number')}${fi('acquisition_date','Acquisition Date',v,'date')}${fi('acquisition_cost','Acquisition Cost',v,'number')}${fi('owner_name','Owner Name',v)}${fi('contact','Contact',v)}${fta('address','Address',v)}<div class="form-actions form-full"><button type="button" class="btn btn-outline" onclick="closeModal('modal-form')">Cancel</button><button type="button" class="btn btn-primary" onclick="saveRecord('vehicles')"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 17V7l3-4h9v14H4z"/><rect x="7" y="13" width="6" height="4"/><rect x="7" y="3" width="6" height="4"/></svg>Save Vehicle</button></div></div>`;}
+
+    function hForm(h={}){
+      const existingParts=parseParts(h.parts||'');
+      const initRows=existingParts.length?existingParts:[{name:'',qty:'',unit:'pcs',price:''}];
+      const rowsHtml=initRows.map((p,i)=>makePartRowHtml(i,p)).join('');
+      const preTotal=existingParts.length?existingParts.reduce((s,p)=>s+parseFloat(p.price||0)*parseFloat(p.qty||1),0):0;
+      const amtVal=h.amount?h.amount:(preTotal>0?preTotal.toFixed(2):'');
+      return `<div id="hform">
+        <div class="form-grid">${fi('engine_no','Engine No',h)}${fi('maintenance_date','Date',h,'date')}</div>
+        ${fta('maintenance_conducted','Maintenance Conducted',h)}
+        <div style="margin-top:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span class="form-label" style="margin:0;font-size:11px">Parts &amp; Materials</span>
+            <span style="font-size:10px;color:var(--ink4)" id="parts-count-lbl">${existingParts.length} item${existingParts.length!==1?'s':''}</span>
+          </div>
+          <div class="parts-builder" id="parts-rows">${rowsHtml}</div>
+          <button type="button" class="parts-add-btn" onclick="addPartRow()">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px"><path d="M10 4v12M4 10h12"/></svg>
+            Add Part / Material
+          </button>
+          <div class="parts-total-row" id="parts-total-row" style="${preTotal>0?'':'display:none'}">
+            <span class="parts-total-label">Parts Subtotal</span>
+            <span class="parts-total-val" id="parts-total">₱${preTotal.toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:14px">
+          <label class="form-label">Total Amount (₱) <span style="font-size:9px;color:var(--ink4);font-weight:500;letter-spacing:0;text-transform:none">override or leave as auto-sum</span></label>
+          <input class="form-input" type="number" step="0.01" inputmode="decimal" name="amount" id="h-amount" value="${amtVal}" placeholder="Auto-calculated from parts" onfocus="this.dataset.manualEdit='1'" onblur="if(!this.value)delete this.dataset.manualEdit">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-form')">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="saveRecord('history')">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M4 17V7l3-4h9v14H4z"/><rect x="7" y="13" width="6" height="4"/><rect x="7" y="3" width="6" height="4"/></svg>
+            Save Record
+          </button>
+        </div>
+      </div>`;
+    }
+
+    function makePartRowHtml(idx,p={}){
+      const units=['pcs','set','lot','liters','gal','meters','kg','box','roll','pair','unit'];
+      const uOpts=units.map(u=>`<option value="${u}" ${(p.unit&&p.unit===u)||(!p.unit&&u==='pcs')?'selected':''}>${u}</option>`).join('');
+      return `<div class="part-row" data-idx="${idx}">
+        <div class="part-row-header">
+          <span class="part-num">Part #${idx+1}</span>
+          <button type="button" class="part-row-del" onclick="removePartRow(this)">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 5l10 10M15 5L5 15"/></svg>Remove
+          </button>
+        </div>
+        <div class="part-row-fields">
+          <div>
+            <div class="part-field-label">Item / Part Name</div>
+            <input class="part-input part-name" type="text" placeholder="e.g. Engine oil, brake pads…" value="${ea(p.name||'')}" oninput="recalcTotal()">
+          </div>
+          <div class="part-row-num-row">
+            <div>
+              <div class="part-field-label">Qty</div>
+              <input class="part-input part-qty" type="number" inputmode="decimal" min="0" step="any" placeholder="1" value="${ea(p.qty||'')}" oninput="recalcTotal()">
+            </div>
+            <div>
+              <div class="part-field-label">Unit</div>
+              <select class="part-unit-sel part-unit">${uOpts}</select>
+            </div>
+            <div>
+              <div class="part-field-label">Unit Price (₱)</div>
+              <input class="part-input part-price" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="${ea(p.price||'')}" oninput="recalcTotal()">
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+    window.makePartRowHtml=makePartRowHtml;
+
+    window.addPartRow=function(){
+      const container=document.getElementById('parts-rows');
+      if(!container) return;
+      const idx=container.querySelectorAll('.part-row').length;
+      const div=document.createElement('div');
+      div.innerHTML=makePartRowHtml(idx);
+      container.appendChild(div.firstElementChild);
+      const nameInput=container.lastElementChild.querySelector('.part-name');
+      if(nameInput) setTimeout(()=>{nameInput.focus();nameInput.scrollIntoView({behavior:'smooth',block:'nearest'});},60);
+      renumberPartRows();
+    };
+
+    function renumberPartRows(){
+      document.querySelectorAll('#parts-rows .part-row').forEach((row,i)=>{
+        const badge=row.querySelector('.part-num');
+        if(badge) badge.textContent='Part #'+(i+1);
+      });
+    }
+
+    window.removePartRow=function(btn){
+      const row=btn.closest('.part-row');
+      if(!row) return;
+      row.style.transition='opacity .18s,transform .18s';
+      row.style.opacity='0'; row.style.transform='scale(.97)';
+      setTimeout(()=>{ row.remove(); renumberPartRows(); recalcTotal(); },180);
+    };
+
+    function recalcTotal(){
+      const container=document.getElementById('parts-rows');
+      const totalEl=document.getElementById('parts-total');
+      const totalRow=document.getElementById('parts-total-row');
+      const countLbl=document.getElementById('parts-count-lbl');
+      if(!container) return;
+      let total=0; let rowCount=0;
+      container.querySelectorAll('.part-row').forEach(row=>{
+        rowCount++;
+        const qty=parseFloat(row.querySelector('.part-qty')?.value||0)||0;
+        const price=parseFloat(row.querySelector('.part-price')?.value||0)||0;
+        total+=qty*price;
+      });
+      if(totalEl) totalEl.textContent='₱'+total.toLocaleString('en-PH',{minimumFractionDigits:2});
+      if(totalRow) totalRow.style.display=(total>0)?'':'none';
+      if(countLbl) countLbl.textContent=rowCount+' item'+(rowCount!==1?'s':'');
+      const amtField=document.getElementById('h-amount')||document.querySelector('#hform [name="amount"]');
+      if(amtField && !amtField.dataset.manualEdit) amtField.value=total>0?total.toFixed(2):'';
+    }
+    window.recalcTotal=recalcTotal;
+
+    async function saveRecord(col){
+      if(!isOnline){ toast('Offline. Cannot save.','error'); return; }
+      const data={};
+      if(col==='vehicles'){
+        document.querySelectorAll('#vform [name]').forEach(el=>data[el.name]=el.value);
+      } else {
+        document.querySelectorAll('#hform [name]').forEach(el=>data[el.name]=el.value);
+        const rows=document.querySelectorAll('#parts-rows .part-row');
+        const partStrings=[]; let totalFromParts=0;
+        rows.forEach(row=>{
+          const name=(row.querySelector('.part-name')?.value||'').trim();
+          const qty=(row.querySelector('.part-qty')?.value||'').trim();
+          const unit=(row.querySelector('.part-unit')?.value||'').trim();
+          const price=(row.querySelector('.part-price')?.value||'0').trim();
+          if(name){ partStrings.push(`${name}|${qty||1}|${unit||'pc'}|${price}`); totalFromParts+=parseFloat(qty||1)*parseFloat(price||0); }
+        });
+        data.parts=partStrings.join(';')||null;
+        data.amount=totalFromParts>0?totalFromParts.toFixed(2):(data.amount||null);
+      }
+      Object.keys(data).forEach(k=>{if(data[k]==='')data[k]=null;});
+      try {
+        if(S.editId){
+          await updateRec(col,S.editId,data);
+          if(col==='vehicles'){const i=S.vehicles.findIndex(x=>x.id===S.editId);if(i>=0)S.vehicles[i]={...S.vehicles[i],...data};}
+          else{const i=S.history.findIndex(x=>x.id===S.editId);if(i>=0)S.history[i]={...S.history[i],...data};}
+          toast('Updated successfully!','success');
+        } else {
+          const ref=await addRec(col,data);
+          if(col==='vehicles') S.vehicles.push({id:ref.id,...data});
+          else S.history.push({id:ref.id,...data});
+          toast('Added successfully!','success');
+        }
+        closeModal('modal-form'); refreshCurrent();
+      } catch(e){ toast('Error: '+e.message,'error'); }
+    }
+    window.saveRecord=saveRecord;
+
+    async function confirmDelete(col,id,modalId){
+      if(!isOnline){ toast('Offline. Cannot delete.','error'); return; }
+      if(!confirm('Delete this record? This cannot be undone.')) return;
+      try {
+        await deleteRec(col,id);
+        if(col==='vehicles') S.vehicles=S.vehicles.filter(x=>x.id!==id);
+        else S.history=S.history.filter(x=>x.id!==id);
+        toast('Deleted!','success'); closeModal(modalId); refreshCurrent();
+      } catch(e){ toast('Error: '+e.message,'error'); }
+    }
+    window.confirmDelete=confirmDelete;
+
+    function printRecord(type,id){
+      const now=new Date();
+      const datePrinted=now.toLocaleDateString('en-PH',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:false});
+      // Compute absolute logo URL so it resolves correctly in the print popup
+      const logoUrl=new URL('./logo.png', location.href).href;
+      let subtitle='',dept='',sections='';
+      const row=(label,val,highlight='')=>{if(!val||String(val).trim()===''||val==='null'||val==='undefined')return '';const style=highlight==='green'?'color:#1a7a2e;font-weight:700':highlight==='red'?'color:#c0392b;font-weight:700':'';return `<tr><td class="rl">${label}:</td><td class="rv" style="${style}">${val}</td></tr>`;};
+      const secHead=label=>`<tr class="sec-head"><td colspan="2">${label}</td></tr>`;
+      if(type==='vehicle'){
+        const v=S.vehicles.find(x=>x.id===id);if(!v)return;
+        subtitle='Vehicle Information Report'; dept=v.department||'';
+        const gsisCls=(v.gsis_remarks||'').toLowerCase().includes('not')?'red':(v.gsis_remarks||'').toLowerCase().includes('insured')?'green':'';
+        // Wrap amounts in row() with a safe guard so null/undefined never shows as "₱null"
+        sections=`${row('Plate Number',v.plate_no)}${row('Vehicle Name',v.vehicle_name)}${row('Department',v.department)}${row('GSIS Status',v.gsis_remarks,gsisCls)}${secHead('TECHNICAL DETAILS')}${row('MV File No',v.mv_file_no)}${row('Engine No',v.engine_no)}${row('Chassis No',v.chassis_no)}${row('Make',v.make)}${row('Series',v.series)}${row('Year Model',v.year_model)}${row('Fuel',v.fuel)}${row('Body Type',v.body_type)}${row('Denomination',v.denomination)}${secHead('REGISTRATION')}${row('O.R No',v.or_no)}${row('O.R Date',fmtDate(v.or_date))}${v.or_amt?row('Amount','₱'+v.or_amt):''}${secHead('OWNER')}${row("Owner's Name",v.owner_name)}${row('Contact',v.contact)}${row('Address',v.address)}`;
+      } else {
+        const h=S.history.find(x=>x.id===id);if(!h)return;
+        const vi=getVehicleInfo(h.engine_no);
+        const parts=parseParts(h.parts);
+        const total=parseAmt(h.amount||'0');
+        subtitle='Maintenance Record Report'; dept=vi.name||'';
+        sections=`${row('Vehicle Name',vi.name)}${row('Plate No',vi.plate)}${row('Engine No',h.engine_no)}${row('Date',fmtDate(h.maintenance_date))}${row('Maintenance Conducted',h.maintenance_conducted)}${parts.length?`${secHead('PARTS & MATERIALS')}${parts.map(p=>row(p.name,`${p.qty} ${p.unit} — ₱${parseFloat(p.price||0).toLocaleString('en-PH',{minimumFractionDigits:2})}`)).join('')}`:''}${secHead('COST')}${row('Total Amount','₱'+total.toLocaleString('en-PH',{minimumFractionDigits:2}))}`;
+      }
+      const win=window.open('','_blank','width=900,height=750');
+      win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${subtitle} — Municipality of Balayan</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;}.page{width:210mm;min-height:297mm;margin:0 auto;padding:14mm 16mm 18mm;}.lh{display:flex;align-items:center;gap:14px;padding-bottom:10px;border-bottom:2px solid #134E35;margin-bottom:12px;}.lh-logo{width:72px;height:72px;object-fit:contain;flex-shrink:0;}.lh-text{flex:1;text-align:center;}.lh-system{font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#134E35;}.lh-subtitle{font-size:12px;color:#333;margin-top:2px;}.lh-date{font-size:11px;color:#555;margin-top:3px;}.lh-dept{font-size:13px;font-weight:700;margin-top:5px;color:#111;}.rtable{width:100%;border-collapse:collapse;margin-top:4px;}.rtable tr{border-bottom:1px solid #e0e0e0;}.rtable .rl{padding:5px 10px 5px 0;font-size:11.5px;font-weight:700;color:#111;width:36%;text-align:right;vertical-align:top;}.rtable .rv{padding:5px 0 5px 12px;font-size:11.5px;color:#111;vertical-align:top;}.sec-head td{background:#e8f0e8;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;padding:5px 10px;text-align:center;color:#134E35;border-bottom:1px solid #aaa;}.pfooter{margin-top:24px;font-size:9px;color:#888;text-align:center;border-top:1px solid #ccc;padding-top:6px;}@media print{body{margin:0;}.page{padding:10mm 14mm 14mm;width:100%;}@page{size:A4;margin:0;}}</style></head><body><div class="page"><div class="lh"><img class="lh-logo" src="${logoUrl}" onerror="this.style.display='none'"><div class="lh-text"><div class="lh-system">Vehicle Maintenance System</div><div class="lh-subtitle">${subtitle}</div><div class="lh-date">${datePrinted}</div>${dept?`<div class="lh-dept">${dept}</div>`:''}</div></div><table class="rtable"><tbody>${sections}</tbody></table><div class="pfooter">Municipality of Balayan, Batangas — Vehicle Maintenance System</div></div><script>var img=document.querySelector('.lh-logo');if(img){img.onload=function(){window.print();};img.onerror=function(){window.print();};}else{window.print();}<\/script></body></html>`);
+      win.document.close();
+    }
+
+    loadDashboard();
+  } catch(e) {
+    document.body.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#F7F8F3;font-family:sans-serif;text-align:center;padding:20px"><div><svg style="width:52px;height:52px;color:#B82B1C;margin:0 auto 16px;display:block" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2l8 16H2L10 2z"/><path d="M10 8v4M10 14v.5"/></svg><div style="font-size:18px;margin-bottom:8px;color:#1A1F14;font-weight:700">Firebase Connection Failed</div><div style="font-size:13px;color:#6B7560">${e.message}</div></div></div>`;
+  }
+})();
