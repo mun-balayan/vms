@@ -27,7 +27,7 @@ const firebaseConfig = {
       const showBtns = online && S.page !== 'dashboard';
       ['fab-btn','topbar-add-btn'].forEach(id=>{
         const el=document.getElementById(id);
-        if(el) el.style.display=showBtns ? (id==='fab-btn'?'flex':'') : 'none';
+        if(el) el.style.display=showBtns ? '' : 'none';
       });
     }
     window.addEventListener('online',  () => { setOnlineState(true);  toast('Back online!','success'); });
@@ -76,7 +76,7 @@ const firebaseConfig = {
       const isDash = pg === 'dashboard';
       const fabEl  = document.getElementById('fab-btn');
       const addEl  = document.getElementById('topbar-add-btn');
-      if (fabEl) fabEl.style.display  = isDash ? 'none' : 'flex';
+      if (fabEl) fabEl.style.display  = isDash ? 'none' : '';
       if (addEl) addEl.style.display  = isDash ? 'none' : '';
       closeSidebar();
       if(pg==='dashboard') loadDashboard();
