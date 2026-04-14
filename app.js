@@ -24,9 +24,10 @@ const firebaseConfig = {
     function setOnlineState(online) {
       isOnline = online;
       document.getElementById('offline-banner').classList.toggle('show', !online);
+      const showBtns = online && S.page !== 'dashboard';
       ['fab-btn','topbar-add-btn'].forEach(id=>{
         const el=document.getElementById(id);
-        if(el) el.style.display=online?'':'none';
+        if(el) el.style.display=showBtns ? (id==='fab-btn'?'flex':'') : 'none';
       });
     }
     window.addEventListener('online',  () => { setOnlineState(true);  toast('Back online!','success'); });
@@ -72,6 +73,11 @@ const firebaseConfig = {
       document.getElementById(`snav-${pg}`)?.classList.add('active');
       document.getElementById(`bnav-${pg}`)?.classList.add('active');
       document.getElementById('topbar-title').textContent=PAGE_TITLES[pg];
+      const isDash = pg === 'dashboard';
+      const fabEl  = document.getElementById('fab-btn');
+      const addEl  = document.getElementById('topbar-add-btn');
+      if (fabEl) fabEl.style.display  = isDash ? 'none' : 'flex';
+      if (addEl) addEl.style.display  = isDash ? 'none' : '';
       closeSidebar();
       if(pg==='dashboard') loadDashboard();
       else if(pg==='vehicles') loadVehicles();
